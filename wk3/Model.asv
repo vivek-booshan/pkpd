@@ -28,7 +28,18 @@ classdef Model < handle
     end
 
     methods (Static)
-                
+        
+        function r2 = R2(sample_data, fitted_data)
+            arguments (Input)
+                sample_data (1, :)
+                fitted_data (1, :)
+            end
+            
+            SS_res = sum((sample_data - fitted_data).^2);
+            SS_tot = sum((sample_data - mean(sample_data)).^2);
+            r2 = 1 - (SS_res/SS_tot);
+        end
+
         function [t, y] = euler(odefun, tspan, y0, h)
             arguments
                 odefun
@@ -80,7 +91,7 @@ classdef Model < handle
             end
             dydt = zeros(3, 1);
             dydt(1) = -p.ka*y(1);
-            dydt(2) = p.ka*y(1)/p.V - p.kcl*y(2);
+            dydt(2) = p.ka*y(1) - p.kcl*y(2);
             dydt(3) = p.kcl*y(2);
         end
     end

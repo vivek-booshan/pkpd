@@ -28,7 +28,20 @@ classdef Model < handle
     end
 
     methods (Static)
-                
+        
+        function r2 = R2(sample_data, fitted_data)
+            arguments (Input)
+                sample_data (1, :) double
+                fitted_data (1, :) double
+            end
+            arguments (Output)
+                r2 double
+            end
+            SS_res = sum((sample_data - fitted_data).^2);
+            SS_tot = sum((sample_data - mean(sample_data)).^2);
+            r2 = 1 - (SS_res/SS_tot);
+        end
+
         function [t, y] = euler(odefun, tspan, y0, h)
             arguments
                 odefun
