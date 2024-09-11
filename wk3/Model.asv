@@ -80,7 +80,7 @@ classdef Model < handle
             end
             dydt = zeros(3, 1);
             dydt(1) = -p.ka*y(1);
-            dydt(2) = p.ka*y(1) - p.kcl*y(2);
+            dydt(2) = p.ka*y(1)/p.V - p.kcl*y(2);
             dydt(3) = p.kcl*y(2);
         end
     end

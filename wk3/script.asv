@@ -1,0 +1,7 @@
+%% IV
+
+%% Oral
+q = 1; V = 1;
+oral = Model(q, V, kcl, ka);
+y0 = [oral.params.q, 0, 0];
+[t, y] = ode45(@Model.oralODE, [0, 10])
