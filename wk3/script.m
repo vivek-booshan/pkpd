@@ -4,16 +4,16 @@ clf;
 q = 0;
 V = 1;
 kcl = 1;
-oral = Model(q, V, kcl);
+infusion = Model(q, V, kcl);
 y0 = [1, 0];
 tspan = 0:1/60:10;
 
 error_prop = @(samples) 0.05 * samples .* randn(size(samples));
 error_add = @(samples) 0.05 * mean(samples) .* randn(size(samples));
 analytic = @(params, t) params(1)*exp(-params(2)*t);
-lsq_optionss = optimset('Display', 'off');
+lsq_options = optimset('Display', 'off');
 param_fit = @(t, y) lsqcurvefit(analytic, [randn(1), randn(1)], t, y, [], [], lsq_options);
-[t, y] = ode45(@Model.infusionODE, tspan, y0, [], oral.params);
+[t, y] = ode45(@Model.infusionODE, tspan, y0, [], infusion.params);
 
 % basic fit
 figure(1);
@@ -105,7 +105,7 @@ analytic = @(params, t) params(1)*exp(-params(2)*t);
 lsq_optionss = optimset('Display', 'off');
 param_fit = @(t, y) lsqcurvefit(analytic, [randn(1), randn(1)], t, y, [], [], lsq_options);
 
-[t, y] = ode45(@Model.oralODE, 0:1/60:10, y0, [], oral.params);
+[t, y] = ode45(@Model.oralODE, tspan, y0, [], oral.params);
 samples = y(30 + 120*(0:4), :); % starting at 30 min every 2 hrs
 %[t, y] = Model.euler(@(t, y) Model.oralODE(t, y, oral.params), [0, 10], y0, 1/60);
 
@@ -118,3 +118,23 @@ plot(t, y);
 % plot(t, analytic(t))
 
 %% compare
+q = [1, 1, 1];
+dose = [1, 1, 1];
+V = [1, 1, 1];
+ka = [1, 1, 0.5];
+kcl = [1, 0.5, 1];
+
+tiledlayout(1, 3);
+for i = 1:3
+    infusion = Model(0, V(i), kcl(i));
+    oral = Model(q(i), V(i), kcl(i), ka(i));
+    y0_infusion = [q(i), 0];
+    y0_oral = [dose(i), 0, 0];
+    [t, y1] = ode45(@Model.infusionODE, tspan, y0_infusion, [], infusion.params);
+    [t, y2] = ode45(@Model.oralODE, tspan, y0_oral, [], oral.params);
+    
+    nexttile; hold on;
+    plot(t, y1(:, 1));
+    plot(t, y2(:, 2));
+    legend('IV', 'oral')
+end
