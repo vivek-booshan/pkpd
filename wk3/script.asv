@@ -1,3 +1,4 @@
+%% test kat
 %% IV
 clf;
 
@@ -18,10 +19,12 @@ param_fit = @(t, y) lsqcurvefit(analytic, [randn(1), randn(1)], t, y, [], [], ls
 % basic fit
 figure(1);
 tiledlayout(2, 2)
-disp("Basic fit")
+disp("Basic fit") 
+title_list = ["5 Sample Pts" "4 Sample Pts" "3 Sample Pts" "2 Sample Pts"]; %% 
 for i = 0:3
     nexttile; hold on;
-
+    title(title_list(i+1)); %% 
+    
     slice = 30 + 120*(0:4-i);
     samples = y(slice, 1);
     t_samples = t(slice);
@@ -37,14 +40,23 @@ for i = 0:3
     text(9, 0.9, sprintf('R^2 = %f', R_squared), 'FontSize', 12, 'HorizontalAlignment', 'right');
     xlim([0, 10]);
     ylim([0, 1]);
+
+    xlabel("Time"); %% 
+    ylabel("Concentration"); %% 
+
 end
+
+sgtitle("IV Basic Fit"); %% 
 
 % fit proportional noise sample
 figure(2);
 disp("\n Proportional fit")
 tiledlayout(2, 2);
+title_list = ["5 Sample Pts" "4 Sample Pts" "3 Sample Pts" "2 Sample Pts"]; %% 
+
 for i = 0:3
     nexttile; hold on;
+    title(title_list(i+1)); %%
 
     slice = 30 + 120*(0:4-i);
     samples = y(slice, 1);
@@ -63,7 +75,13 @@ for i = 0:3
     xlim([0, 10]);
     ylim([0, 1]);
     %disp(Model.R2(samples, fitted_eqn(t_samples)));
+
+    xlabel("Time"); %% 
+    ylabel("Concentration"); %% 
 end
+
+sgtitle("IV Proportional Fit"); %% 
+
 
 % fit additive noise sample
 figure(3);
@@ -118,20 +136,20 @@ plot(t, y);
 % plot(t, analytic(t))
 
 %% compare
-q = [1, 10, 50];
-dose = [1, 100, 500];
-V = [1, 25, 40];
-ka = [1, 0.05, 0.3];
-kcl = [1, 0.2, 0.5];
+q = [1, 1, 1];
+dose = [1, 1, 1];
+V = [1, 1, 1];
+ka = [1, 1, 0.5];
+kcl = [1, 0.5, 1];
 
-tiledlayout(3, 1);
+tiledlayout(1, 3);
 for i = 1:3
-    infusion = Model(q(i), V(i), kcl(i));
-    model = Model(q(i), V(i), kcl(i), ka(i));
-    y0_infusion = [q(1), 0];
+    infusion = Model(0, V(i), kcl(i));
+    oral = Model(q(i), V(i), kcl(i), ka(i));
+    y0_infusion = [q(i), 0];
     y0_oral = [dose(i), 0, 0];
-    [t, y1] = ode45(@Model.infusionODE, tspan, y0_infusion, [], model.params);
-    [t, y2] = ode45(@Model.oralODE, tspan, y0_oral, [], model.params);
+    [t, y1] = ode45(@Model.infusionODE, tspan, y0_infusion, [], infusion.params);
+    [t, y2] = ode45(@Model.oralODE, tspan, y0_oral, [], oral.params);
     
     nexttile; hold on;
     plot(t, y1(:, 1));

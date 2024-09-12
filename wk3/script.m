@@ -19,10 +19,12 @@ param_fit = @(t, y) lsqcurvefit(analytic, [randn(1), randn(1)], t, y, [], [], ls
 % basic fit
 figure(1);
 tiledlayout(2, 2)
-disp("Basic fit")
+disp("Basic fit") 
+title_list = ["5 Sample Pts" "4 Sample Pts" "3 Sample Pts" "2 Sample Pts"]; %% 
 for i = 0:3
     nexttile; hold on;
-
+    title(title_list(i+1)); %% 
+    
     slice = 30 + 120*(0:4-i);
     samples = y(slice, 1);
     t_samples = t(slice);
@@ -38,14 +40,23 @@ for i = 0:3
     text(9, 0.9, sprintf('R^2 = %f', R_squared), 'FontSize', 12, 'HorizontalAlignment', 'right');
     xlim([0, 10]);
     ylim([0, 1]);
+
+    xlabel("Time"); %% 
+    ylabel("Concentration"); %% 
+
 end
+
+sgtitle("IV Basic Fit"); %% 
 
 % fit proportional noise sample
 figure(2);
 disp("\n Proportional fit")
 tiledlayout(2, 2);
+title_list = ["5 Sample Pts" "4 Sample Pts" "3 Sample Pts" "2 Sample Pts"]; %% 
+
 for i = 0:3
     nexttile; hold on;
+    title(title_list(i+1)); %%
 
     slice = 30 + 120*(0:4-i);
     samples = y(slice, 1);
@@ -64,7 +75,13 @@ for i = 0:3
     xlim([0, 10]);
     ylim([0, 1]);
     %disp(Model.R2(samples, fitted_eqn(t_samples)));
+
+    xlabel("Time"); %% 
+    ylabel("Concentration"); %% 
 end
+
+sgtitle("IV Proportional Fit"); %% 
+
 
 % fit additive noise sample
 figure(3);
