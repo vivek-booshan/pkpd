@@ -153,7 +153,7 @@ y0 = [1, 0, 0];
 tspan = 0:1/60:10; % Define time span for integration
 error_prop = @(samples) 0.05 * samples .* randn(size(samples));
 error_add = @(samples) 0.05 * mean(samples) .* randn(size(samples));
-analytic = @(params, t) (params(1)/(params(2) + params(1)))*(exp(-params(2)*t) - exp(-params(1)*t));
+analytic = @(params, t) (params(1)/(params(2) - params(1)))*(exp(-params(1)*t) - exp(-params(2)*t));
 lsq_options = optimset('Display', 'off');
 param_fit = @(t, y) lsqcurvefit(analytic, [1, 0, 0], t, y, [], [], lsq_options);
 
