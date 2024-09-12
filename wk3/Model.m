@@ -45,7 +45,7 @@ classdef Model < handle
         function [t, y] = euler(odefun, tspan, y0, h)
             arguments
                 odefun
-                tspan (1, :)
+                tspan (1, 2)
                 y0 (1, :)
                 h double = 0.01
             end
