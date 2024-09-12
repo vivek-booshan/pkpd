@@ -1,4 +1,4 @@
-%% IV
+%% IV Compare Solution Methods
 clf;
 
 q = 0;
@@ -15,6 +15,34 @@ lsq_options = optimset('Display', 'off');
 param_fit = @(t, y) lsqcurvefit(analytic, [randn(1), randn(1)], t, y, [], [], lsq_options);
 [t, y] = ode45(@Model.infusionODE, tspan, y0, [], infusion.params);
 
+figure(4); tiledlayout(1, 2)
+% First plot: concentration-time profile
+nexttile; hold on;
+plot(t, exp(-t), 'b-', 'LineWidth', 2);  % Analytic solution
+plot(t, y(:, 1), 'r--', 'LineWidth', 2);  % ODE45 solution
+[teuler, yeuler] = Model.euler(@(t, y) Model.infusionODE(t, y, infusion.params), [0, 10], [1, 0]);
+plot(teuler, yeuler(:, 1), 'g-.', 'LineWidth', 2);  % Euler solution
+
+% Adding labels and legends
+xlabel('Time (hours)');
+ylabel('Concentration (mg/L)');
+title('IV Infusion: Concentration-Time Profile');
+legend('Analytic Solution', 'ODE45 Solution', 'Euler Solution', 'Location', 'best');
+grid on;
+
+% Second plot: residual errors
+nexttile; hold on;
+plot(t, zeros(size(t)), 'k--', 'LineWidth', 1);  % Zero line
+plot(t, y(:, 1) - exp(-t), 'r--', 'LineWidth', 2);  % Residuals ODE45
+plot(teuler, yeuler(:, 1) - exp(-teuler), 'g-.', 'LineWidth', 2);  % Residuals Euler
+
+% Adding labels and legends
+xlabel('Time (hours)');
+ylabel('Residuals (mg/L)');
+title('Residuals: ODE vs Analytic Solution');
+legend('Zero Line', 'ODE45 Residuals', 'Euler Residuals', 'Location', 'best');
+grid on;
+%% IV Fits
 % basic fit
 figure(1);
 tiledlayout(2, 2)
@@ -182,7 +210,7 @@ end
 
 
 %% compare
-q = [1, 1, 1];
+%q = [1, 1, 1];
 dose = [1, 1, 1];
 V = [1, 1, 1];
 ka = [1, 1, 0.5];
@@ -191,8 +219,8 @@ kcl = [1, 0.5, 1];
 tiledlayout(1, 3);
 for i = 1:3
     infusion = Model(0, V(i), kcl(i));
-    oral = Model(q(i), V(i), kcl(i), ka(i));
-    y0_infusion = [q(i), 0];
+    oral = Model(0, V(i), kcl(i), ka(i));
+    y0_infusion = [1, 0];
     y0_oral = [dose(i), 0, 0];
     [~, y1] = ode45(@Model.infusionODE, tspan, y0_infusion, [], infusion.params);
     [t, y2] = ode45(@Model.oralODE, tspan, y0_oral, [], oral.params);
