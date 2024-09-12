@@ -26,7 +26,7 @@ plot(teuler, yeuler(:, 1), 'g-.', 'LineWidth', 2);  % Euler solution
 % Adding labels and legends
 xlabel('Time (hours)');
 ylabel('Concentration (mg/L)');
-title('IV Infusion: Concentration-Time Profile');
+% title('IV Infusion: Concentration-Time Profile');
 legend('Analytic Solution', 'ODE45 Solution', 'Euler Solution', 'Location', 'best');
 grid on;
 
@@ -259,6 +259,7 @@ for i = 1:3
 end
 
 %% Oral compare integrators
+figure(5);
 q = 0; % mmol/hr
 V = 1; % liters
 kcl = 0.5; % 1/hr
@@ -270,14 +271,14 @@ tspan = 0:1/60:10; % Define time span for integration
 % Noise functions
 error_prop = @(samples) 0.05 * samples .* randn(size(samples));
 error_add = @(samples) 0.05 * mean(samples) .* randn(size(samples));
-analytic = @(t) (ka/(kcl - ka))*(exp(-ka*t) - exp(-kcl*t)
+analytic = @(t) (ka/(kcl - ka))*(exp(-ka*t) - exp(-kcl*t));
 % Solve ODE
 [t, y] = ode45(@Model.oralODE, tspan, y0, [], oral.params);
 
 figure(4); tiledlayout(1, 2)
 % First plot: concentration-time profile
 nexttile; hold on;
-plot(t, analyti), 'b-', 'LineWidth', 2);  % Analytic solution
+plot(t, analytic(t), 'b-', 'LineWidth', 2);  % Analytic solution
 plot(t, y(:, 2), 'LineWidth', 2);  % ODE45 solution
 [teuler, yeuler] = Model.euler(@(t, y) Model.oralODE(t, y, oral.params), [0, 10], [1, 0, 0]);
 plot(teuler, yeuler(:, 2), 'g-.', 'LineWidth', 2);  % Euler solution
@@ -292,8 +293,8 @@ grid on;
 % Second plot: residual errors
 nexttile; hold on;
 plot(t, zeros(size(t)), 'k--', 'LineWidth', 1);  % Zero line
-plot(t, y(:, 1) - exp(-t), 'r--', 'LineWidth', 2);  % Residuals ODE45
-plot(teuler, yeuler(:, 1) - exp(-teuler), 'g-.', 'LineWidth', 2);  % Residuals Euler
+plot(t, y(:, 2) - analytic(t), 'r--', 'LineWidth', 2);  % Residuals ODE45
+plot(teuler, yeuler(:, 2) - analytic(teuler), 'g-.', 'LineWidth', 2);  % Residuals Euler
 
 % Adding labels and legends
 xlabel('Time (hours)');

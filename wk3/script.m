@@ -8,11 +8,6 @@ infusion = Model(q, V, kcl);
 y0 = [1, 0];
 tspan = 0:1/60:10;
 
-error_prop = @(samples) 0.05 * samples .* randn(size(samples));
-error_add = @(samples) 0.05 * mean(samples) .* randn(size(samples));
-analytic = @(params, t) params(1)*exp(-params(2)*t);
-lsq_options = optimset('Display', 'off');
-param_fit = @(t, y) lsqcurvefit(analytic, [randn(1), randn(1)], t, y, [], [], lsq_options);
 [t, y] = ode45(@Model.infusionODE, tspan, y0, [], infusion.params);
 
 figure(4); tiledlayout(1, 2)
@@ -26,7 +21,7 @@ plot(teuler, yeuler(:, 1), 'g-.', 'LineWidth', 2);  % Euler solution
 % Adding labels and legends
 xlabel('Time (hours)');
 ylabel('Concentration (mg/L)');
-title('IV Infusion: Concentration-Time Profile');
+% title('IV Infusion: Concentration-Time Profile');
 legend('Analytic Solution', 'ODE45 Solution', 'Euler Solution', 'Location', 'best');
 grid on;
 
@@ -77,7 +72,7 @@ tiledlayout(2, 2, 'TileSpacing', 'Compact', 'Padding', 'Compact');
 for i = 0:3
     % Setup for each tile
     nexttile; hold on;
-    set(gca, 'Color', [0.95, 0.95, 0.9])
+    %set(gca, 'Color', [0.95, 0.95, 0.9])
     % Define slice and samples for the scenario
     slice = 30 + 120*(0:4-i);
     samples = y(slice, 1);
@@ -160,7 +155,7 @@ tiledlayout(2, 2, 'TileSpacing', 'Compact', 'Padding', 'Compact');
 for i = 0:3
     % Setup for each tile
     nexttile; hold on;
-    set(gca, 'Color', [0.95, 0.95, 0.9]); % Cream background for the tiles
+    %set(gca, 'Color', [0.95, 0.95, 0.9]); % Cream background for the tiles
     
     % Define slice and samples for the scenario
     slice = 30 + 120*(0:4-i);
