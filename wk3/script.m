@@ -302,7 +302,7 @@ for i = 1:3
     % Add labels and titles
     xlabel('Time (hours)', 'FontSize', 12);
     ylabel('Concentration (mmol/L)', 'FontSize', 12);
-    title(sprintf('Comparison %d', i), 'FontSize', 14, 'FontWeight', 'bold');
+    title(sprintf('Condition %d', i), 'FontSize', 14, 'FontWeight', 'bold');
     xlim([0, 10]);
     ylim([0, 1]);
     grid on;
