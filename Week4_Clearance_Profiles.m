@@ -54,28 +54,6 @@ title('Drug Concentration Depletion with Different Clearance Mechanisms', 'FontS
 legend('show', 'Location', 'northeast');
 grid on;
 xlim([0 24]);
-ylim([0 max([C_first_order, C_renal, C_hepatic, C_michaelis]) * 1.1]); % Adjust y-axis to fit all profiles
-
-% Function to convert HSL to RGB
-function rgb = hsl2rgb(h, s, l)
-    c = (1 - abs(2 * l - 1)) * s;
-    x = c * (1 - abs(mod(h / 60, 2) - 1));
-    m = l - c / 2;
-    switch floor(h / 60)
-        case 0
-            rgb = [c, x, 0] + m;
-        case 1
-            rgb = [x, c, 0] + m;
-        case 2
-            rgb = [0, c, x] + m;
-        case 3
-            rgb = [0, x, c] + m;
-        case 4
-            rgb = [x, 0, c] + m;
-        case 5
-            rgb = [c, 0, x] + m;
-    end
-end
 
 % Clear workspace
 clear;
@@ -254,7 +232,6 @@ title('Effect of Plasma Protein Binding on Drug Clearance Mechanisms', 'FontSize
 legend('show', 'Location', 'northeast');
 grid on;
 xlim([0 24]);
-ylim([0 max([C_first_order, C_renal, C_hepatic, C_michaelis]) * 1.1]); % Adjust y-axis to fit all profiles
 
 % Function to convert HSL to RGB
 function rgb = hsl2rgb(h, s, l)
