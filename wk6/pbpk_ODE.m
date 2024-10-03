@@ -1,15 +1,17 @@
 function dydt = pbpk_ODE(t, y, p)
 
     dydt = zeros(14, 1);
-    
+
     % Arteries
     name = fieldnames(p.k_art);
     sum_kart = 0;
     for i = 1:numel(name)
-        sum_kart = sum_kart + p.V.(name{i});
+        if ~strcmp(name{i}, 'L')
+          sum_kart = sum_kart + p.k_art.(name{i});
+        end
     end
-    dydt(1) = -p.V.art*y(1)*sum_kart + 2*p.k_art.L * p.V.L * y(11); % acct for subtraction of lung in sum so add double
-
+    dydt(1) = -p.V.art*y(1)*sum_kart + p.k_art.L * p.V.L * y(11); % acct for subtraction of lung in sum so add double
+    dydt(1) = dydt(1)/p.V.art;
 
     % Gastrointestinal (Gi)
     dydt(2) = p.ka_Gi * y(14);
@@ -60,16 +62,17 @@ function dydt = pbpk_ODE(t, y, p)
     % Lungs
 
     dydt(11) = p.ka_L * y(14);
-    dydt(11) = dydt(11) + p.k_vein.L * p.V.vein * y(1) - p.k_art.L * p.V.L * y(11);
+    dydt(11) = dydt(11) + p.k_vein.L * p.V.vein * y(12) - p.k_art.L * p.V.L * y(11);
     dydt(11) = dydt(11)/p.V.L;
 
     % Veins
     
-    dydt(12) = p.k_vein.Gi * p.V.Gi * y(2) + p.k_vein.P * p.V.P * y(3) + p.k_vein.Lvr * p.V.Lvr * y(4) + ...
+    dydt(12) = p.k_vein.Lvr * p.V.Lvr * y(4) + ...
          p.k_vein.Vsc * p.V.Vsc * y(5) + p.k_vein.K * p.V.K * y(6) +  p.k_vein.H * p.V.H * y(7) + ...
           p.k_vein.B * p.V.B * y(8) + p.k_vein.M * p.V.M * y(9) + p.k_vein.subq * p.V.subq * y(10) + ...
-          -p.k_vein.L * p.V.vein * y(11);
-
+          -p.k_vein.L * p.V.vein * y(12);
+    dydt(12) = dydt(12)/p.V.vein;
+    
     % Clear (amt)
 
     dydt(13) = p.kcl_K * p.V.K * y(6) + p.kcl_Lvr * p.V.Lvr * y(4) + p.kcl_Gi * p.V.Gi * y(2);
