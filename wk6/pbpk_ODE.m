@@ -21,21 +21,27 @@ function dydt = pbpk_ODE(t, y, p)
     % Pancreas
     
     dydt(3) = p.k_art.P * p.V.art * y(1) - p.klvr_P * p.V.P * y(3);
+    dydt(3) = dydt(3) + p.k_diff.vsc_P * p.V.Vsc * y(5) - p.k_diff.P_vsc * p.V.P * y(3);
     dydt(3) = dydt(3)/p.V.P;
 
     % Liver
     
     dydt(4) = p.k_art.Lvr * p.V.art * y(1) + p.klvr_Gi * p.V.Gi * y(2) + p.klvr_P * p.V.P * y(3) - p.k_vein.Lvr * p.V.Lvr * y(4) - p.kcl_Lvr * p.V.Lvr * y(4);
+    dydt(4) = dydt(4) + p.k_diff.vsc_Lvr * p.V.Vsc * y(5) - p.k_diff.Lvr_vsc * p.V.Lvr * y(4);
     dydt(4) = dydt(4)/p.V.Lvr;
 
     % Viscera
     
     dydt(5) = p.k_art.Vsc * p.V.art * y(1) - p.k_vein.Vsc * p.V.Vsc * y(5);
+    dydt(5) = dydt(5) - p.k_diff.vsc_P * p.V.Vsc * y(5)   + p.k_diff.P_vsc * p.V.P * y(3);
+    dydt(5) = dydt(5) - p.k_diff.vsc_Lvr * p.V.Vsc * y(5) + p.k_diff.Lvr_vsc * p.V.Lvr * y(4);
+    dydt(5) = dydt(5) - p.k_diff.vsc_K * p.V.Vsc * y(5)   + p.k_diff.K_vsc * p.V.K * y(6);
     dydt(5) = dydt(5)/p.V.Vsc;
 
     % Kidney
     
     dydt(6) = p.k_art.K * p.V.art * y(1) - p.k_vein.K * p.V.K * y(6) - p.kcl_K * p.V.K * y(6); 
+    dydt(6) = dydt(6) + p.k_diff.vsc_K * p.V.Vsc * y(5) - p.k_diff.K_vsc * p.V.K * y(6);
     dydt(6) = dydt(6)/p.V.K;
 
     % Heart
@@ -52,11 +58,13 @@ function dydt = pbpk_ODE(t, y, p)
 
     dydt(9) = p.ka_M * y(14);
     dydt(9) = dydt(9) + p.k_art.M * p.V.art * y(1) - p.k_vein.M * p.V.M * y(9);
+    dydt(9) = dydt(9) + p.k_diff.subq_M * p.V.subq * y(10) - p.k_diff.M_subq * p.V.M * y(9);
     dydt(9) = dydt(9)/p.V.M;
     
     % Subq
     dydt(10) = p.ka_subq * y(14);
     dydt(10) = dydt(10) + p.k_art.subq * p.V.art * y(1) - p.k_vein.subq * p.V.subq * y(10);
+    dydt(10) = dydt(10) + p.k_diff.M_subq * p.V.M * y(9) - p.k_diff.subq_M * p.V.subq * y(10);
     dydt(10) = dydt(10)/p.V.subq;
     
     % Lungs
