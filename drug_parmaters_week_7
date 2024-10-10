@@ -1,0 +1,278 @@
+% Time span for simulationtspan = [0 24];  % Time from 0 to 24 hours
+tspan = [0 24];  % Time from 0 to 24 hours
+
+%% Midazolam Parameters and Simulation
+q_midazolam = 5;  % Initial dose (mg) for IV
+Vd_midazolam = 0.8 * 70;  % Volume of distribution (L)
+ke_midazolam = log(2) / 1.5;  % Elimination rate constant (1/hr)
+
+% Initial condition for IV bolus administration
+y0_midazolam = [q_midazolam / Vd_midazolam];  
+
+% Define the corrected ODE for IV bolus administration of Midazolam
+infusionODE_midazolam = @(t, y) -ke_midazolam * y;  
+
+% Solve using ode45
+[t_midazolam, y_midazolam] = ode45(infusionODE_midazolam, tspan, y0_midazolam);
+
+% Parameters for Oral Administration of Midazolam
+ka_midazolam = 0.5;   % Absorption rate constant (1/hr)
+F_midazolam = 0.9;    % Bioavailability
+y0_midazolam_oral = [q_midazolam, 0];  % y(1) = A_GI, y(2) = C
+
+% Define the ODE for oral administration of Midazolam
+oralODE_midazolam = @(t, y) [-ka_midazolam * y(1); (F_midazolam * ka_midazolam * y(1) / Vd_midazolam) - ke_midazolam * y(2)];
+
+% Solve using ode45 for oral administration
+[t_midazolam_oral, y_midazolam_oral] = ode45(oralODE_midazolam, tspan, y0_midazolam_oral);
+
+%% Metoprolol Parameters and Simulation
+q_metoprolol = 100;  % Initial dose (mg) for IV
+Vd_metoprolol = 4.0 * 70;  % Volume of distribution (L)
+ke_metoprolol = log(2) / 3;  % Elimination rate constant (1/hr)
+
+% Initial condition for IV bolus administration
+y0_metoprolol = [q_metoprolol / Vd_metoprolol];
+
+% Define the ODE for IV bolus administration of Metoprolol
+infusionODE_metoprolol = @(t, y) -ke_metoprolol * y;
+
+% Solve using ode45
+[t_metoprolol, y_metoprolol] = ode45(infusionODE_metoprolol, tspan, y0_metoprolol);
+
+% Parameters for Oral Administration of Metoprolol
+ka_metoprolol = 1;   % Absorption rate constant (1/hr)
+F_metoprolol = 0.5;  % Bioavailability
+y0_metoprolol_oral = [q_metoprolol, 0];  % y(1) = A_GI, y(2) = C
+
+% Define the ODE for oral administration of Metoprolol
+oralODE_metoprolol = @(t, y) [-ka_metoprolol * y(1); (F_metoprolol * ka_metoprolol * y(1) / Vd_metoprolol) - ke_metoprolol * y(2)];
+
+% Solve using ode45 for oral administration
+[t_metoprolol_oral, y_metoprolol_oral] = ode45(oralODE_metoprolol, tspan, y0_metoprolol_oral);
+
+%% Ciprofloxacin Parameters and Simulation
+q_ciprofloxacin = 500;  % Initial dose (mg) for IV
+Vd_ciprofloxacin = 2.2 * 70;  % Volume of distribution (L)
+ke_ciprofloxacin = log(2) / 3.5;  % Elimination rate constant (1/hr)
+
+% Initial condition for IV bolus administration
+y0_ciprofloxacin = [q_ciprofloxacin / Vd_ciprofloxacin];
+
+% Define the ODE for IV bolus administration of Ciprofloxacin
+infusionODE_ciprofloxacin = @(t, y) -ke_ciprofloxacin * y;
+
+% Solve using ode45
+[t_ciprofloxacin, y_ciprofloxacin] = ode45(infusionODE_ciprofloxacin, tspan, y0_ciprofloxacin);
+
+% Parameters for Oral Administration of Ciprofloxacin
+ka_ciprofloxacin = 0.5;   % Absorption rate constant (1/hr)
+F_ciprofloxacin = 0.7;    % Bioavailability
+y0_ciprofloxacin_oral = [q_ciprofloxacin, 0];  % y(1) = A_GI, y(2) = C
+
+% Define the ODE for oral administration of Ciprofloxacin
+oralODE_ciprofloxacin = @(t, y) [-ka_ciprofloxacin * y(1); (F_ciprofloxacin * ka_ciprofloxacin * y(1) / Vd_ciprofloxacin) - ke_ciprofloxacin * y(2)];
+
+% Solve using ode45 for oral administration
+[t_ciprofloxacin_oral, y_ciprofloxacin_oral] = ode45(oralODE_ciprofloxacin, tspan, y0_ciprofloxacin_oral);
+
+%% Propranolol Parameters and Simulation
+q_propranolol = 40;  % Initial dose (mg) for IV
+Vd_propranolol = 4.5 * 70;  % Volume of distribution (L)
+ke_propranolol = log(2) / 3;  % Elimination rate constant (1/hr)
+
+% Initial condition for IV bolus administration
+y0_propranolol = [q_propranolol / Vd_propranolol];
+
+% Define the ODE for IV bolus administration of Propranolol
+infusionODE_propranolol = @(t, y) -ke_propranolol * y;
+
+% Solve using ode45
+[t_propranolol, y_propranolol] = ode45(infusionODE_propranolol, tspan, y0_propranolol);
+
+% Parameters for Oral Administration of Propranolol
+ka_propranolol = 0.9;   % Absorption rate constant (1/hr)
+F_propranolol = 0.3;    % Bioavailability
+y0_propranolol_oral = [q_propranolol, 0];  % y(1) = A_GI, y(2) = C
+
+% Define the ODE for oral administration of Propranolol
+oralODE_propranolol = @(t, y) [-ka_propranolol * y(1); (F_propranolol * ka_propranolol * y(1) / Vd_propranolol) - ke_propranolol * y(2)];
+
+% Solve using ode45 for oral administration
+[t_propranolol_oral, y_propranolol_oral] = ode45(oralODE_propranolol, tspan, y0_propranolol_oral);
+
+%% Theophylline Parameters and Simulation
+q_theophylline = 200;  % Initial dose (mg) for IV
+Vd_theophylline = 0.7 * 70;  % Volume of distribution (L)
+ke_theophylline = log(2) / 8;  % Elimination rate constant (1/hr)
+
+% Initial condition for IV bolus administration
+y0_theophylline = [q_theophylline / Vd_theophylline];
+
+% Define the ODE for IV bolus administration of Theophylline
+infusionODE_theophylline = @(t, y) -ke_theophylline * y;
+
+% Solve using ode45
+[t_theophylline, y_theophylline] = ode45(infusionODE_theophylline, tspan, y0_theophylline);
+
+% Parameters for Oral Administration of Theophylline
+ka_theophylline = 0.8;   % Absorption rate constant (1/hr)
+F_theophylline = 1;      % Bioavailability
+y0_theophylline_oral = [q_theophylline, 0];  % y(1) = A_GI, y(2) = C
+
+% Define the ODE for oral administration of Theophylline
+oralODE_theophylline = @(t, y) [-ka_theophylline * y(1); (F_theophylline * ka_theophylline * y(1) / Vd_theophylline) - ke_theophylline * y(2)];
+
+% Solve using ode45 for oral administration
+[t_theophylline_oral, y_theophylline_oral] = ode45(oralODE_theophylline, tspan, y0_theophylline_oral);
+
+%% Lidocaine Parameters and Simulation
+% Parameters for Lidocaine
+q_lidocaine = 100;  % Initial dose (mg) for IV
+Vd_lidocaine = 1.1 * 70;  % Volume of distribution (L) (assuming 70 kg body weight)
+ke_lidocaine = log(2) / 1.5;  % Elimination rate constant (1/hr)
+
+% Initial condition for IV bolus administration
+y0_lidocaine = [q_lidocaine / Vd_lidocaine];  
+
+% Define the ODE for IV bolus administration of Lidocaine
+infusionODE_lidocaine = @(t, y) -ke_lidocaine * y;  
+
+% Solve using ode45
+[t_lidocaine, y_lidocaine] = ode45(infusionODE_lidocaine, tspan, y0_lidocaine);
+
+% Parameters for Oral Administration of Lidocaine (hypothetical)
+ka_lidocaine = 0.8;   % Absorption rate constant (1/hr)
+F_lidocaine = 0.3;    % Bioavailability (lower due to first-pass metabolism)
+y0_lidocaine_oral = [q_lidocaine, 0];  % y(1) = A_GI, y(2) = C
+
+% Define the ODE for oral administration of Lidocaine
+oralODE_lidocaine = @(t, y) [-ka_lidocaine * y(1); (F_lidocaine * ka_lidocaine * y(1) / Vd_lidocaine) - ke_lidocaine * y(2)];
+
+% Solve using ode45 for oral administration
+[t_lidocaine_oral, y_lidocaine_oral] = ode45(oralODE_lidocaine, tspan, y0_lidocaine_oral);
+
+%% Propranolol Parameters and Simulation
+% Parameters for Propranolol
+q_propranolol = 40;  % Initial dose (mg) for IV
+Vd_propranolol = 4.3 * 70;  % Volume of distribution (L)
+ke_propranolol = log(2) / 2;  % Elimination rate constant (1/hr)
+
+% Initial condition for IV bolus administration
+y0_propranolol = [q_propranolol / Vd_propranolol];
+
+% Define the ODE for IV bolus administration of Propranolol
+infusionODE_propranolol = @(t, y) -ke_propranolol * y;
+
+% Solve using ode45
+[t_propranolol, y_propranolol] = ode45(infusionODE_propranolol, tspan, y0_propranolol);
+
+% Parameters for Oral Administration of Propranolol
+ka_propranolol = 0.9;   % Absorption rate constant (1/hr)
+F_propranolol = 0.3;    % Bioavailability
+y0_propranolol_oral = [q_propranolol, 0];  % y(1) = A_GI, y(2) = C
+
+% Define the ODE for oral administration of Propranolol
+oralODE_propranolol = @(t, y) [-ka_propranolol * y(1); (F_propranolol * ka_propranolol * y(1) / Vd_propranolol) - ke_propranolol * y(2)];
+
+% Solve using ode45 for oral administration
+[t_propranolol_oral, y_propranolol_oral] = ode45(oralODE_propranolol, tspan, y0_propranolol_oral);
+
+
+
+% List of drugs and corresponding variables for IV and Oral administration
+drugs = {'Lidocaine', 'Propranolol', 'Midazolam', 'Metoprolol', 'Ciprofloxacin', 'Theophylline'};
+t_iv_all = {t_lidocaine, t_propranolol, t_midazolam, t_metoprolol, t_ciprofloxacin, t_theophylline};
+y_iv_all = {y_lidocaine, y_propranolol, y_midazolam, y_metoprolol, y_ciprofloxacin, y_theophylline};
+t_oral_all = {t_lidocaine_oral, t_propranolol_oral, t_midazolam_oral, t_metoprolol_oral, t_ciprofloxacin_oral, t_theophylline_oral};
+y_oral_all = {y_lidocaine_oral, y_propranolol_oral, y_midazolam_oral, y_metoprolol_oral, y_ciprofloxacin_oral, y_theophylline_oral};
+
+% Plotting for each drug
+for i = 1:length(drugs)
+    % Extract the time and concentration data for IV and oral
+    t_iv = t_iv_all{i};
+    y_iv = y_iv_all{i};
+    
+    t_oral = t_oral_all{i};
+    y_oral = y_oral_all{i};
+    
+    % Extract concentrations for oral (2nd column is plasma concentration)
+    y_oral_C = y_oral(:, 2);
+    
+    %% Combined Plot for IV Administration
+    figure;
+    subplot(2,2,1); % First subplot for IV concentration vs. time
+    plot(t_iv, y_iv, 'b-', 'LineWidth', 2);
+    title([drugs{i} ' IV: Concentration vs Time']);
+    xlabel('Time (hours)');
+    ylabel('Concentration (mg/L)');
+    
+    subplot(2,2,2); % Second subplot for IV ln(concentration) vs. time
+    plot(t_iv, log(y_iv), 'r-', 'LineWidth', 2);
+    title([drugs{i} ' IV: ln(Concentration) vs Time']);
+    xlabel('Time (hours)');
+    ylabel('ln(Concentration)');
+    
+    %% Combined Plot for Oral Administration
+    subplot(2,2,3); % First subplot for Oral concentration vs. time
+    plot(t_oral, y_oral_C, 'b-', 'LineWidth', 2);
+    title([drugs{i} ' Oral: Concentration vs Time']);
+    xlabel('Time (hours)');
+    ylabel('Concentration (mg/L)');
+    
+    subplot(2,2,4); % Second subplot for Oral ln(concentration) vs. time
+    plot(t_oral, log(y_oral_C), 'r-', 'LineWidth', 2);
+    title([drugs{i} ' Oral: ln(Concentration) vs Time']);
+    xlabel('Time (hours)');
+    ylabel('ln(Concentration)');
+    
+    % Adjust layout
+    sgtitle(drugs{i}); % Overall title for the entire figure
+end
+% Time points for blood sampling
+% Define the volume of distribution (Vd) for each drug
+Vd_iv_all = {Vd_lidocaine, Vd_propranolol, Vd_midazolam, Vd_metoprolol, Vd_ciprofloxacin, Vd_theophylline};
+
+% Define absorption rate constants and bioavailability values
+ka_all = [ka_lidocaine, ka_propranolol, ka_midazolam, ka_metoprolol, ka_ciprofloxacin, ka_theophylline];
+F_all = [F_lidocaine, F_propranolol, F_midazolam, F_metoprolol, F_ciprofloxacin, F_theophylline];
+
+% Time points for blood sampling
+sample_times = 2:2:24; % Every 2 hours from 2 to 24
+sample_indices = sample_times + 1; % Adjust for 0-based indexing
+
+% Initialize arrays to store results
+ke_values = zeros(length(drugs), 1);
+Vd_values = zeros(length(drugs), 1);
+ka_values = zeros(length(drugs), 1);
+F_values = zeros(length(drugs), 1);
+
+% Loop through each drug for parameter extraction
+for i = 1:length(drugs)
+    % Calculate V_d (assuming Vd_iv_all holds volume of distribution)
+    Vd_values(i) = Vd_iv_all{i}; 
+
+    % Calculate k_e from the log of IV concentrations
+    log_conc = log(y_iv_all{i}); % Ensure y_iv_all is the correct variable
+    t_iv = t_iv_all{i};          % Corresponding time vector
+
+    % Identify elimination phase starting from 6 hours
+    elimination_phase_indices = find(t_iv >= 6); 
+
+    if length(elimination_phase_indices) >= 2
+        % Calculate k_e using the first two points in elimination phase
+        k_e = (log_conc(elimination_phase_indices(1)) - log_conc(elimination_phase_indices(2))) / ...
+               (t_iv(elimination_phase_indices(1)) - t_iv(elimination_phase_indices(2)));
+        ke_values(i) = -k_e; % Store as a positive value
+    else
+        disp(['Not enough data points for elimination phase for drug ', drugs{i}]);
+    end
+
+    % Set k_a and F directly from your defined parameters
+    ka_values(i) = ka_all(i); % Assuming k_a_all is defined
+    F_values(i) = F_all(i);     % Assuming F_all is defined
+end
+
+% Output extracted parameters
+disp(table(drugs', ke_values, Vd_values, ka_values, F_values, ...
+    'VariableNames', {'Drug', 'k_e', 'V_d', 'k_a', 'F'}));
