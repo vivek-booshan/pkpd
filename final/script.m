@@ -1,43 +1,52 @@
-% Define the clearance rates for peripheral tissue and liver
-k_pt = 0.05;  % 5% clearance from peripheral tissue each time step
-k_liver = 0.10;  % 10% clearance from liver each time step
+% Parameter values for ihatemylifeODE
+p = struct();
 
-% Transition matrix with the new virtual clearance compartment
-%     S, I, P, VLDL, LDL, HDL, L, Cl
-A = [0.5, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;  % Stomach transitions
-     0.0, 0.5, 0.4, 0.05, 0.05, 0.0, 0.0, 0.0;  % Intestine transitions
-     0.0, 0.0, 0.3, 0.1, 0.3, 0.2, 0.0, k_pt;  % Peripheral tissue transitions (clearing to clearance)
-     0.0, 0.0, 0.0, 0.1, 0.8, 0.1, 0.0, 0.0;  % VLDL transitions
-     0.0, 0.0, 0.0, 0.0, 0.2, 0.5, 0.3, 0.0;  % LDL transitions
-     0.0, 0.0, 0.0, 0.0, 0.1, 0.7, 0.2, 0.0;  % HDL transitions
-     0.05, 0.05, 0.05, 0.3, 0.3, 0.1, 0.1, k_liver;  % Liver transitions (clearing to clearance)
-     0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 1.0ljj];  % Virtual clearance compartment
+% Volume terms (assumed in liters)
+p.V = struct('GI', 1, 'peripheral', 10, 'liver', 1);
 
+% GI parameters (absorption rates, assumed in 1/hr)
+p.GI = struct('chylomicron', struct('chol', 0.1, 'TG', 0.1));
 
-% Initial state vector (start with food in stomach)
-x0 = zeros(length(A), 1);
-x0(1) = 1e6; % Cholesterol/TG in stomach
+% Peripheral tissue parameters (transport and clearance rates, assumed in 1/hr)
+p.peripheral = struct( ...
+    'chylomicron', struct('chol', 0.05, 'TG', 0.05), ...
+    'HDL', struct('chol', 0.03, 'TG', 0.02), ...
+    'clearance', struct('chol', 0.01, 'TG', 0.01) ...
+);
 
-% Simulate over time (10 time steps)
-num_steps = 1000;
-x = zeros(length(A), num_steps);  % Store state probabilities
-x(:,1) = x0;  % Set initial state
-dt = 0.5;
-for t = 2:num_steps
-    x(:, t) = A * x(:, t-1);  % Update state probabilities
-end
+% Liver parameters (transport and clearance rates, assumed in 1/hr)
+p.liver = struct( ...
+    'LDL', struct('chol', 0.07, 'TG', 0.05), ...
+    'HDL', struct('chol', 0.04, 'TG', 0.03), ...
+    'clearance', struct('chol', 0.02, 'TG', 0.01), ...
+    'oxLDL', struct('chol', 0.005) ...
+);
 
-% Plot state probabilities for each compartment
-figure(1); clf;
-plot(1:num_steps, x(8, :))
-% plot(1:num_steps, x(1,:), 'r', 'LineWidth', 2); hold on;
-% plot(1:num_steps, x(2,:), 'g', 'LineWidth', 2);
-% plot(1:num_steps, x(3,:), 'b', 'LineWidth', 2);
-% plot(1:num_steps, x(4,:), 'm', 'LineWidth', 2);
-% plot(1:num_steps, x(5,:), 'c', 'LineWidth', 2);
-% plot(1:num_steps, x(6,:), 'k', 'LineWidth', 2);
-% plot(1:num_steps, x(7,:), 'y', 'LineWidth', 2);
-legend('Stomach', 'Intestine', 'Peripheral Tissue', 'VLDL', 'LDL', 'HDL', 'Liver');
-title('Cholesterol Distribution Over Time');
-xlabel('Time Step');
-ylabel('Probability');
+% ROS dynamics parameters
+p.basalROS = 0.02;                % Baseline ROS production (arbitrary units/hr)
+p.foodProductionMultiplier = 1.2; % ROS increase due to food intake (unitless multiplier)
+p.antioxidant = 0.01;             % Antioxidant clearance of ROS (1/hr)
+p.foodAntiOxMultiplier = 1.0;     % Antioxidant effect (unitless multiplier)
+
+% Initial conditions (assumed in arbitrary units or mg/dL)
+y0 = [
+    100;    % GI_chol
+    50;     % Peripheral_chol
+    20;     % Liver_chol
+    0;      % Clearance_chol
+    200;    % GI_TG
+    100;    % Peripheral_TG
+    50;     % Liver_TG
+    0;      % Clearance_TG
+    1;      % ROS (arbitrary baseline)
+    0       % oxLDL (starts at 0)
+]';
+%%
+
+tspan = 1:1/60:24;
+[t, y] = ode45(@(t, y) nodrugODE(t, y, p), tspan, y0);
+% volumes = [p.V.GI, p.V.peripheral, p.V.liver, 1];
+% b = sum(volumes)
+figure(1); clf
+plot(y(:, [1:4 10]))
+legend()
