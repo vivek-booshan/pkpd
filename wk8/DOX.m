@@ -31,6 +31,6 @@ function dydt = DOX(t, y, p)
     % Int
     dydt(8) = (p.ktu * p.Vcap * Ccaplipo - p.krel * p.Vint * Cintlipo)/p.Vint;
     
-    dydt(9) = -p.k * p.fb * Cecs + p.ks * Cs;
+    dydt(9) = -p.k * p.fb * Cecs *Cs + p.ks * Cs;
 
 end
