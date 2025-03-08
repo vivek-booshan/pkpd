@@ -31,7 +31,7 @@ function plot_pbpk(time, solution, balance)
     legend({'Arteries', 'GI', 'Pancreas', 'Liver', 'Viscera', 'Kidney', 'Heart', 'Brain', 'Muscle', 'Subcutaneous', 'Lungs', 'Veins'}, ...
         'Location', 'eastoutside', 'FontSize', 9);
     grid on; 
-    yscale log; xscale log;
+    yscale log; %xscale log;
     set(gca, 'FontSize', 12);
     
     % Mass balance plot (1/4 of the figure) - Total Mass Over Time

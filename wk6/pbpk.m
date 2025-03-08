@@ -76,7 +76,7 @@ disp(p);
 y0 = zeros(1, 14);
 dose = 10;
 y0(14) = dose;
-tspan = 1:1/60:24;
+tspan = 1:1/60:168;
 
 % Absorption Rate Constants (1/hr)
 p.ka_Gi = 0.1;            % Absorption rate constant from GI
