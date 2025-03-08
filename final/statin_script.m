@@ -48,8 +48,8 @@ y0 = [
     1;      % ROS (arbitrary baseline)
     0;      % oxLDL (starts at 0)
     10;     % Oral statin (arbitrary starting amount)
-    5;      % Statin (arbitrary starting amount)
-    0.5;    % Liver statin (arbitrary starting amount)
+    0;      % Statin (arbitrary starting amount)
+    0;    % Liver statin (arbitrary starting amount)
     0;      % Clearance statin (starts at 0)
 ]';
 %%
@@ -108,10 +108,10 @@ line_styles = {'-', '--', ':'}; % No drug, statin, ezetimibe
 
 % Plotting setup
 figure;
-% tiledlayout(2, 1); % Create two rows of plots: one for cholesterol, one for oxLDL
+tiledlayout(2, 1); % Create two rows of plots: one for cholesterol, one for oxLDL
 
 % Cholesterol dynamics
-% nexttile;
+nexttile;
 hold on;
 
 % Plot for each treatment model
@@ -135,13 +135,13 @@ legend({'GI (No Drug)', 'Peripheral (No Drug)', 'Liver (No Drug)', 'Clearance (N
 grid on; 
 
 % oxLDL dynamics
-% nexttile;
+nexttile;
 hold on;
 
 % Plot oxLDL dynamics for each model
-for i = 1:3
+for i = 2:3
     plot(t, models{i}(:, oxLDL_index), ...
-        'LineStyle', line_styles{i}, ...
+         'LineStyle', line_styles{i}, ...
         'Color', [0, 0.5, 0], ... % Example: green color for oxLDL
         'LineWidth', 1.5);
 end
@@ -149,8 +149,38 @@ end
 xlabel('Time (hours)');
 ylabel('oxLDL (arbitrary units)');
 title('Oxidized LDL Dynamics');
-legend({'No Drug', 'Statin', 'Ezetimibe'}, 'Location', 'best');
+legend({'Statin', 'Ezetimibe'}, 'Location', 'best');
 grid on; 
 
 % Enhance overall figure aesthetics
 sgtitle('Comparison of Triglyceride and oxLDL Dynamics');
+
+%%
+% Define indices for the statin variables
+statin_indices = [11, 12, 13, 14]; % Oral statin, systemic statin, liver statin, clearance statin
+
+% Define colors for the compartments
+drug_colors = lines(length(statin_indices)); % Generate 4 distinct colors
+
+% Create figure
+figure;
+hold on;
+
+% Plot statin concentrations
+for i = 1:length(statin_indices)
+    plot(t, y_statin(:, statin_indices(i)), ...
+        'LineWidth', 1.5, ...        % Line thickness
+        'Color', drug_colors(i, :)); % Assign unique color to each compartment
+end
+
+% Add labels and legend
+xlabel('Time (hours)');
+ylabel('Drug Concentration (mg/L)');
+title('Drug Concentrations');
+
+% Generate legend dynamically
+legend_entries = ["Oral", "Systemic", "Liver", "Clearance"];
+legend(legend_entries, 'Location', 'northeast');
+
+grid on;
+hold off;

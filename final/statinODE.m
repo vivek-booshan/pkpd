@@ -75,8 +75,8 @@ function dydt = statinODE(t, y, p)
     doxLDL = p.V.liver * p.liver.oxLDL.chol * liver_chol * max(1, log(ROS)); 
     
     doral_statin = - p.F * p.ka * oral_statin;
-    dstatin = + p.F * p.ka * oral_statin - p.liver_statin * statin;
-    dliver_statin = + p.liver_statin * statin - p.liver.clearance.statin * liver_statin;
+    dstatin = (+ p.F * p.ka * oral_statin - p.liver_statin * statin) / p.V.GI;
+    dliver_statin = (+ p.liver_statin * statin - p.liver.clearance.statin * liver_statin) / p.V.liver;
     dclearance_statin = + p.liver.clearance.statin * liver_statin;
 
     dydt = [...
