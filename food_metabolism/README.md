@@ -41,14 +41,14 @@ When prompted for the file and passphrase, just hit “Enter” to accept the de
 ```
 [username@hostname ~]$ ssh-keygen -t rsa -b 2048
 generating public/private rsa key pair.
-enter file in which to save the key (/home/daveho/.ssh/id_rsa): 
-created directory '/home/daveho/.ssh'.
+enter file in which to save the key (/home/username/.ssh/id_rsa): 
+created directory '/home/username/.ssh'.
 enter passphrase (empty for no passphrase): 
 enter same passphrase again: 
-your identification has been saved in /home/daveho/.ssh/id_rsa
-your public key has been saved in /home/daveho/.ssh/id_rsa.pub
+your identification has been saved in /home/username/.ssh/id_rsa
+your public key has been saved in /home/username/.ssh/id_rsa.pub
 the key fingerprint is:
-sha256:stviaceiefng/gxlbnjtn89flio+r6gdevq0sqs+hx4 daveho@ugradx
+sha256:stviaceiefng/gxlbnjtn89flio+r6gdevq0sqs+hx4 username@ugradx
 the key's randomart image is:
 +---[rsa 2048]----+
 |++.....oo ooo.   |
