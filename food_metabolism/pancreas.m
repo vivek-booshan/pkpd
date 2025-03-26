@@ -10,30 +10,60 @@
 classdef Pancreas
     methods (Static)
 
-        function dydt = pancreas(t, y, p)
-            dydt = zeros(4, 1);
-            dinsulin = insulin(t, y, p);
-            dglucagon = glucagon(t, y, p);
-            dsomatostatin = somatostatin(t, y, p);
-            dglucose = glucose(t, y, p);
-
-            % dydt = dinsulin + dglucagon + dsomatostatin + dglucose;
-        end
-
-        function dinsulin = insulin(t, I, R, p)
+        function dydt = pancreas(...
+            t, ...
+            Ins, RIns, ...
+            Glc, RGlc,...
+            Somat, RSomat, ...
+            Glu, RGlu, ...
+            p_pancreas, ...
+        )
             arguments (Input)
-                t double % timestamp
-                I double % Free Blood Insulin concentration
-                R double % Free Insulin Receptor concentration
-                p struct % Insulin parameter struct
+                t          double % timestamp
+                Ins        double % Free Insulin Blood Conc.
+                Rins       double % Available Insulin Receptor Conc.
+                Glc        double % Free Glucagon Blood Conc. 
+                RGlc       double % Available Glucagon Receptor Conc.
+                Somat      double % Free Somatostatin Blood Conc.
+                Rsomat     double % Available Somatostatin Receptor Conc.
+                Glu        double % Free Glucose Blood Conc.
+                RGlu       double % Available Glucose Receptor Conc.
+                p_pancreas struct % parameter struct
             end
             arguments (Output)
-                dinsulin double
+                dydt (1, :) double
             end
+            dinsulin = insulin(Ins, RIns, p_pancreas);
+            dglucagon = glucagon(Glc, RGlc, p_pancreas);
+            dsomatostatin = somatostatin(Somat, RSomat, p_pancreas);
+            dglucose = glucose(Glu, RGlu, p_pancreas);
 
-            Kd = Ligand.ligand_Kd(L, R, LR);
-            fo = Ligand.fractional_occupancy(L, Kd);
-            dinsulin = p.k_insulin_secretion_insulin * ligand.fractional_inhibitory_effect(fo, 15) * I;
+            dydt = [
+                dinsulin, ...
+                dglucagon, ...
+                dsomatostatin, ...
+                dglucose, ...
+            ];
+        end
+
+        function dinsulin = insulin(I, R, IR, p)
+            arguments (Input)
+                % t double % timestamp
+                I  double % Free Blood Insulin concentration
+                R  double % Free Insulin Receptor concentration
+                IR double % Bound Insulin
+                p  struct % Insulin parameter struct
+            end
+            arguments (Output)
+                dinsulin (1, 3) double
+            end
+            [dI, dR, dIR] = Ligand.ligandODE(I, R, IR, p.kinsulin_binding_on, p.kinsulin_binding_off);
+            dinsulin = dinsulin + Ligand.inhibitory_secretion(...
+                I, R, IR, ...
+                p.kinsulin_binding_on, p.kinsulin_binding_off, ...
+                p.kinsulin_baseline_secretion_inhibitory, ...
+                p.kinsulin_tuner, ...
+             );
             % dinsulin = dinsulin + glucose % upregulate
             % dinsulin = dinsulin + glucagon % inhibit
             % dinsulin = dinsulin + somatostatin % inhibit
@@ -42,7 +72,18 @@ classdef Pancreas
         end
 
 
-        function dydt = glucagon(t, y, p)
+        function dydt = glucagon(t, G, R, p)
+            arguments (Input)
+                t double
+                G double
+                R double
+                p struct
+            end
+            arguments (Output)
+                dglucose double
+            end
+            % L = Ligand.ligand_bound(I, R, p.kglucagon_on, pkglucagon_off);
+
             dglucagon = (...
                 + p.glucagon_blood_pancreas * y(2) * p.V_blood ...
                 - p.glucagon_pancreas_portal * y(2) * p.V_pancreas ...
