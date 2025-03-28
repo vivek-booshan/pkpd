@@ -3,10 +3,9 @@
 
 # ### Glucose in brain
 
-# In[11]:
-
 
 #TODO: confirm rates and volumes, all parameters 
+#TODO: return from brain??
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -67,9 +66,6 @@ plt.show()
 
 # ### Keytones in Brain
 
-# In[13]:
-
-
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
@@ -127,8 +123,6 @@ plt.grid()
 plt.show()
 
 
-# In[ ]:
-
 
 #todo decide on important other factors 
 #insilin 
@@ -136,13 +130,7 @@ plt.show()
 #todo how it is sent to other organs
 
 
-# In[ ]:
 
-
-
-
-
-# In[ ]:
 
 
 
