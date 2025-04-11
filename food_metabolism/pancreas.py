@@ -12,6 +12,14 @@ def pancreas_dummy_ode(t, y):
     return dydt
 
 def pancreatic_secretion_response_to_Gblood(Gblood):
+    """
+        provides piecewise functions approximating insulin, glucagon, and
+        somatostatin secretion response relative to plasma glucose concentrations (mM).
+        Note that insulin and somatostatin secretions are dependent on a
+        baseline maximum secretion rate, while glucagon is based on the baseline
+        secretion in the absence of glucose glucagon is based on the baseline secretion
+        in the absence of glucose.
+    """
     insulin_m1 = (.75 - .0) / (11 - 2.5)
     insulin_m2 = (.85 - .75) / (17 - 11)
     insulin_m3 = (1 - 0.85) / (30 - 17)
