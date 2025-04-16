@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-@dataclass
-class Volumes(slots=True):
+@dataclass(slots=True)
+class Volumes:
     plasma  : float
     gut     : float
     liver   : float
@@ -10,8 +10,8 @@ class Volumes(slots=True):
     pancreas: float
     brain   : float
 
-@dataclass
-class SharedRates(frozen=True, slots=True):
+@dataclass(frozen=True, slots=True)
+class SharedRates:
     k_P_to_ACoA : float
     k_ACoA_to_P : float
     k_FA_to_ACoA: float
@@ -22,16 +22,16 @@ class SharedRates(frozen=True, slots=True):
     k_P_to_G6P  : float
     k_G6P_to_P  : float
 
-@dataclass
-class ClearanceRates(frozen=True, slots=True):
+@dataclass(frozen=True, slots=True)
+class ClearanceRates:
     kCL_insulin: float
     kCL_ATP    : float
     kCL_G      : float
     kCL_F      : float
     kCL_FA     : float
 
-@dataclass
-class MuscleParameters(frozen=True, slots=True):
+@dataclass(frozen=True, slots=True)
+class MuscleParameters:
     k_insulin_from_plasma: float
     k_insulin_to_plasma  : float
     k_FA_from_plasma     : float
@@ -49,8 +49,8 @@ class MuscleParameters(frozen=True, slots=True):
     k_P_to_L             : float
     k_L_to_P             : float
 
-@dataclass
-class FatParameters(frozen=True, slots=True):
+@dataclass(frozen=True, slots=True)
+class FatParameters:
     k_insulin_from_plasma : float
     k_insulin_to_plasma   : float
     k_FA_from_plasma      : float
@@ -62,8 +62,8 @@ class FatParameters(frozen=True, slots=True):
     k_FA_to_TAG           : float
     k_TAG_to_FA           : float
 
-@dataclass
-class GIParameters(frozen=True, slots=True):
+@dataclass(frozen=True, slots=True)
+class GIParameters:
     kabs_G                         : float
     kabs_F                         : float
     kabs_FA                        : float
@@ -75,12 +75,12 @@ class GIParameters(frozen=True, slots=True):
     Km_reester                     : float
     Km_export                      : float
 
-@dataclass
+@dataclass(frozen=True, slots=True)
 class PancreasParameters(frozen=True, slots=True):
     pass
 
-@dataclass
-class Parameters(slots=True):
+@dataclass(slots=True)
+class Parameters:
     V      : Volumes
     shared : SharedRates
     CL     : ClearanceRates
