@@ -77,6 +77,28 @@ class GIParameters:
 
 @dataclass(frozen=True, slots=True)
 class PancreasParameters(frozen=True, slots=True):
+    insulin_m1: float = (0.75 - 0) / (11 - 2.5)
+    insulin_m2: float = (0.85 - 0.75) / (17 - 11)
+    insulin_m3: float = (1 - 0.85) / (30 - 17)
+    insulin_x1: float = 2.5
+    insulin_x2: float = -34
+    insulin_x3: float = -170/3
+
+    glucagon_m1: float = (0.3 - 1) / (7.5 - 0)
+    glucagon_m2: float = (0 - 0.3) / (30 - 7.5)
+
+    glucagon_x1: float = 75/7
+    glucagon_x2: float = 30
+
+    somatostatin_m1: float = 1 / 30
+
+    k_baseline_insulin_secretion_max: float
+    k_baseline_glucagon_secretion_empty: float
+    k_baseline_insulin_secretion_max: float
+    pass
+
+@dataclass
+class LiverParameters:
     pass
 
 @dataclass(slots=True)
@@ -86,4 +108,6 @@ class Parameters:
     CL     : ClearanceRates
     M      : MuscleParameters
     F      : FatParameters
+    Panc   : PancreasParameters
+    Liver  : LiverParameters
     GI     : GIParameters
