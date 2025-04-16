@@ -32,35 +32,35 @@ class ClearanceRates(frozen=True, slots=True):
 
 @dataclass
 class MuscleParameters(frozen=True, slots=True):
-    k_insulin_plasma: float
-    k_insulin_muscle: float
-    k_FA_plasma     : float
-    k_FA_muscle     : float
-    k_G_plasma      : float
-    k_G_muscle      : float
-    k_AA_plasma     : float
-    k_AA_muscle     : float
-    k_L_plasma      : float
-    k_L_muscle      : float
-    NADH_ETC        : float
-    FADH2_ETC       : float
-    k_Glc_to_G6P    : float
-    k_G6P_to_Glc    : float
-    k_P_to_L        : float
-    k_L_to_P        : float
+    k_insulin_from_plasma: float
+    k_insulin_to_plasma  : float
+    k_FA_from_plasma     : float
+    k_FA_to_plasma       : float
+    k_G_from_plasma      : float
+    k_G_to_plasma        : float
+    k_AA_from_plasma     : float
+    k_AA_to_plasma       : float
+    k_L_from_plasma      : float
+    k_L_to_plasma        : float
+    NADH_ETC             : float
+    FADH2_ETC            : float
+    k_Glc_to_G6P         : float
+    k_G6P_to_Glc         : float
+    k_P_to_L             : float
+    k_L_to_P             : float
 
 @dataclass
 class FatParameters(frozen=True, slots=True):
-    k_insulin_plasma: float
-    k_insulin_fat   : float
-    k_FA_plasma     : float
-    k_FA_fat        : float
-    k_G_plasma      : float
-    k_G_fat         : float
-    k_AA_plasma     : float
-    k_AA_fat        : float
-    k_FA_to_TAG     : float
-    k_TAG_to_FA     : float
+    k_insulin_from_plasma : float
+    k_insulin_to_plasma   : float
+    k_FA_from_plasma      : float
+    k_FA_to_plasma        : float
+    k_G_from_plasma       : float
+    k_G_to_plasma         : float
+    k_AA_from_plasma      : float
+    k_AA_to_plasma        : float
+    k_FA_to_TAG           : float
+    k_TAG_to_FA           : float
 
 @dataclass
 class GIParameters(frozen=True, slots=True):
