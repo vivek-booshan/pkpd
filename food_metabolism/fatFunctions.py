@@ -11,7 +11,11 @@
 # 10 Pyruvate
 # 11 acetylcoa fat
 # 12 ROS fat
+<<<<<<< HEAD
 from parameters import *
+=======
+from parameters import Parameters
+>>>>>>> c50ce4630345de21f8dd3b0b4d2f907aba06c297
 
 def fat_init():
     p = Parameters(
