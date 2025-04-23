@@ -57,8 +57,6 @@ def fat_init():
         ),
         M=None,
         GI=None,
-        CLATP=None,  # optional, if needed elsewhere you might need to add this to `ClearanceRates`
-        # Pancreas is not being used, so not included
     )
     return p
 
