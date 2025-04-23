@@ -15,8 +15,8 @@ class SharedRates:
     k_P_to_ACoA : float
     k_ACoA_to_P : float
     k_FA_to_ACoA: float
+    k_ACoA_to_FA: float
     k_AA_to_ACoA: float
-    k_AcoA_to_FA: float
     k_G_to_G6P  : float
     k_G6P_to_G  : float
     k_P_to_G6P  : float
@@ -79,7 +79,7 @@ class GIParameters:
 class PancreasParameters:
     pass
 
-@dataclass(slots=True, kw_only=True)
+@dataclass(frozen=True, slots=True, kw_only=True)
 class Parameters:
     V      : Volumes
     shared : SharedRates
