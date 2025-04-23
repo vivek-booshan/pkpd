@@ -16,7 +16,7 @@ class SharedRates:
     k_ACoA_to_P : float
     k_FA_to_ACoA: float
     k_AA_to_ACoA: float
-    k_AcoA_to_FA: float
+    k_ACoA_to_FA: float
     k_G_to_G6P  : float
     k_G6P_to_G  : float
     k_P_to_G6P  : float
@@ -26,9 +26,9 @@ class SharedRates:
 class ClearanceRates:
     kCL_insulin: float
     kCL_ATP    : float
-    kCL_G      : float
-    kCL_F      : float
-    kCL_FA     : float
+    kCL_G_GI      : float
+    kCL_F_GI      : float
+    kCL_FA_GI     : float
 
 @dataclass(frozen=True, slots=True)
 class MuscleParameters:
@@ -76,7 +76,7 @@ class GIParameters:
     Km_export                      : float
 
 @dataclass(frozen=True, slots=True)
-class PancreasParameters(frozen=True, slots=True):
+class PancreasParameters:
     pass
 
 @dataclass(slots=True)
