@@ -11,11 +11,8 @@
 # 10 Pyruvate
 # 11 acetylcoa fat
 # 12 ROS fat
-<<<<<<< HEAD
+import numpy as np
 from parameters import *
-=======
-from parameters import Parameters
->>>>>>> c50ce4630345de21f8dd3b0b4d2f907aba06c297
 
 def fat_init():
     p = Parameters(
@@ -68,7 +65,6 @@ def fat_init():
 
 def fat(t, y, p, n):
     dydt = np.zeros(n)
-
     glucose(t, y, p, dydt)
     insulin(t, y, p, dydt)
     fattyacids(t, y, p, dydt)
