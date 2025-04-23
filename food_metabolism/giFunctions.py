@@ -30,7 +30,18 @@ def giInit():
             kCL_F_GI=0.05,
             kCL_FA_GI=0.1
         ),
-        F=None,
+        F=FatParameters(
+            k_insulin_from_plasma=1.0,
+            k_insulin_to_plasma=0.1,
+            k_FA_from_plasma=2.0,
+            k_FA_to_plasma=0.2,
+            k_G_from_plasma=1.0,
+            k_G_to_plasma=0.1,
+            k_AA_from_plasma=1.0,
+            k_AA_to_plasma=0.1,
+            k_FA_to_TAG=1.0,               # fattyacids_to_triglycerides
+            k_TAG_to_FA=0.1                # triglycerides_to_fattyacids
+        ),
         M=None,
         GI=GIParameters(
             kabs_G=0.1,
