@@ -3,6 +3,7 @@ from enum import IntEnum, auto
 
 class Index(IntEnum):
     plasma_glucose=auto()
+    plasma_fructose=auto()
     plasma_insulin=auto()
     plasma_fattyacid=auto()
     plasma_aminoacid=auto()
