@@ -47,58 +47,58 @@ def skeletalmuscle(t, y, p, n):
 
 def glucose(t, y, p, dydt):
     # dydt = np.zeros(n)
-    dydt[0] = (
-        (-p.M.k_G_from_plasma * y[0] * p.V.plasma + p.M.k_G_to_plasma * y[1] * p.V.muscle) / p.V.plasma
+    dydt[Index.plasma_glucose] = (
+        (-p.M.k_G_from_plasma * y[Index.plasma_glucose] * p.V.plasma + p.M.k_G_to_plasma * y[Index.muscle_glucose] * p.V.muscle) / p.V.plasma
     )
-    dydt[1] = (
-        (p.M.k_G_from_plasma * y[0] * p.V.plasma - p.M.k_G_to_plasma * y[1] * p.V.muscle) / p.V.muscle
-        - p.M.k_Glc_to_G6P * y[1] + p.M.k_G6P_to_Glc * y[8]
+    dydt[Index.muscle_glucose] = (
+        (p.M.k_G_from_plasma * y[Index.plasma_glucose] * p.V.plasma - p.M.k_G_to_plasma * y[Index.muscle_glucose] * p.V.muscle) / p.V.muscle
+        - p.M.k_Glc_to_G6P * y[Index.muscle_glucose] + p.M.k_G6P_to_Glc * y[Index.muscle_G6P]
     )
     # return dydt
 
 def insulin(t, y, p, dydt):
     # dydt = np.zeros(n)
-    dydt[2] = (
-        (-p.M.k_insulin_from_plasma * y[2] * p.V.plasma + p.M.k_insulin_to_plasma * y[3] * p.V.muscle) / p.V.plasma
+    dydt[Index.plasma_insulin] = (
+        (-p.M.k_insulin_from_plasma * y[Index.plasma_insulin] * p.V.plasma + p.M.k_insulin_to_plasma * y[Index.muscle_insulin] * p.V.muscle) / p.V.plasma
     )
-    dydt[3] = (
-        (p.M.k_insulin_from_plasma * y[2] * p.V.plasma - p.M.k_insulin_to_plasma * y[3] * p.V.muscle) / p.V.muscle
-        - p.CL.kCL_insulin * y[3]
+    dydt[Index.muscle_insulin] = (
+        (p.M.k_insulin_from_plasma * y[Index.plasma_insulin] * p.V.plasma - p.M.k_insulin_to_plasma * y[Index.muscle_insulin] * p.V.muscle) / p.V.muscle
+        - p.CL.kCL_insulin * y[Index.muscle_insulin]
     )
     # return dydt
 
 def fattyacids(t, y, p, dydt):
     # dydt = np.zeros(n)
-    dydt[4] = (
-        (-p.M.k_FA_from_plasma * y[4] * p.V.plasma + p.M.k_FA_to_plasma * y[5] * p.V.muscle) / p.V.plasma
+    dydt[Index.plasma_fattyacid] = (
+        (-p.M.k_FA_from_plasma * y[Index.plasma_fattyacid] * p.V.plasma + p.M.k_FA_to_plasma * y[Index.muscle_fattyacid] * p.V.muscle) / p.V.plasma
     )
-    dydt[5] = (
-        (p.M.k_FA_from_plasma * y[4] * p.V.plasma - p.M.k_FA_to_plasma * y[5] * p.V.muscle) / p.V.muscle
-        - p.shared.k_FA_to_ACoA * y[5] * y[17]
+    dydt[Index.muscle_fattyacid] = (
+        (p.M.k_FA_from_plasma * y[Index.plasma_fattyacid] * p.V.plasma - p.M.k_FA_to_plasma * y[Index.muscle_fattyacid] * p.V.muscle) / p.V.muscle
+        - p.shared.k_FA_to_ACoA * y[Index.muscle_fattyacid] * y[Index.muscle_ATP]
     )
     # return dydt
 
 def aminoacids(t, y, p, dydt):
     # dydt = np.zeros(n)
-    dydt[6] = (
-        (-p.M.k_AA_from_plasma * y[6] * p.V.plasma + p.M.k_AA_to_plasma * y[7] * p.V.muscle) / p.V.plasma
+    dydt[Index.plasma_aminoacid] = (
+        (-p.M.k_AA_from_plasma * y[Index.plasma_aminoacid] * p.V.plasma + p.M.k_AA_to_plasma * y[Index.muscle_aminoacid] * p.V.muscle) / p.V.plasma
     )
-    dydt[7] = (
-        (p.M.k_AA_from_plasma * y[6] * p.V.plasma - p.M.k_AA_to_plasma * y[7] * p.V.muscle) / p.V.muscle
-        - p.shared.k_AA_to_ACoA * y[7]
+    dydt[Index.muscle_aminoacid] = (
+        (p.M.k_AA_from_plasma * y[Index.plasma_aminoacid] * p.V.plasma - p.M.k_AA_to_plasma * y[Index.muscle_aminoacid] * p.V.muscle) / p.V.muscle
+        - p.shared.k_AA_to_ACoA * y[Index.muscle_aminoacid]
     )
     # return dydt
 
 def g6p(t, y, p, dydt):
     # dydt = np.zeros(n)
     Km = 1
-    dydt[8] = (
-        + p.M.k_Glc_to_G6P * y[1]
-        - p.M.k_G6P_to_Glc * y[8]
-        - p.shared.k_G6P_to_P * p.V.muscle * y[8] / (Km + y[8] * p.V.muscle)
-        + p.shared.k_P_to_G6P * y[9]
-        - p.shared.k_G6P_to_P * y[8] * y[12]**2
-        + p.shared.k_P_to_G6P * y[10]**2 * y[17]**3 * y[13]**2
+    dydt[Index.muscle_G6P] = (
+        + p.M.k_Glc_to_G6P * y[Index.muscle_glucose]
+        - p.M.k_G6P_to_Glc * y[Index.muscle_G6P]
+        - p.shared.k_G6P_to_P * p.V.muscle * y[Index.muscle_G6P] / (Km + y[Index.muscle_G6P] * p.V.muscle)
+        + p.shared.k_P_to_G6P * y[Index.muscle_glycogen]
+        - p.shared.k_G6P_to_P * y[Index.muscle_G6P] * y[Index.muscle_NAD]**2
+        + p.shared.k_P_to_G6P * y[Index.muscle_pyruvate]**2 * y[Index.muscle_ATP]**3 * y[Index.muscle_NADH]**2
     )
     # return dydt
 
@@ -109,72 +109,72 @@ def glycogen(t, y, p, dydt):
     #20% of volume
     Km = 1
 
-    dydt[9] = (
-        p.shared.k_G6P_to_P * p.V.muscle * y[8] / (Km + y[8] * p.V.muscle)
-        - p.shared.k_P_to_G6P * y[9]
+    dydt[Index.muscle_glycogen] = (
+        p.shared.k_G6P_to_P * p.V.muscle * y[Index.muscle_G6P] / (Km + y[Index.muscle_G6P] * p.V.muscle)
+        - p.shared.k_P_to_G6P * y[Index.muscle_glycogen]
     )
     # return dydt
 
 def pyruvate(t, y, p, dydt):
     # dydt = np.zeros(n)
-    dydt[10] = (
-        2 * p.shared.k_G6P_to_P * y[8] * y[12]**2
-        - 2 * p.shared.k_P_to_G6P * y[10]**2 * y[17]**3 * y[13]**2
-        - p.shared.k_P_to_ACoA * y[10] * y[12]
-        - p.M.k_P_to_L * y[10] * y[13]
-        + p.M.k_L_to_P * y[19] * y[12]
+    dydt[Index.muscle_pyruvate] = (
+        2 * p.shared.k_G6P_to_P * y[Index.muscle_G6P] * y[Index.muscle_NAD]**2
+        - 2 * p.shared.k_P_to_G6P * y[Index.muscle_pyruvate]**2 * y[Index.muscle_ATP]**3 * y[Index.muscle_NADH]**2
+        - p.shared.k_P_to_ACoA * y[Index.muscle_pyruvate] * y[Index.muscle_NAD]
+        - p.M.k_P_to_L * y[Index.muscle_pyruvate] * y[Index.muscle_NADH]
+        + p.M.k_L_to_P * y[Index.muscle_lactate] * y[Index.muscle_NAD]
     )
     # return dydt
 
 def acetylcoa(t, y, p, dydt):
     # dydt = np.zeros(n)
-    dydt[11] = (
-        p.shared.k_P_to_ACoA * y[10] * y[12]
-        + 8 * p.shared.k_FA_to_ACoA * y[5] * y[17]
-        + p.shared.k_AA_to_ACoA * y[7]
-        - p.shared.k_ACoA_to_P * y[11] * y[12]**3 * y[14]
+    dydt[Index.muscle_ACoA] = (
+        p.shared.k_P_to_ACoA * y[Index.muscle_pyruvate] * y[Index.muscle_NAD]
+        + 8 * p.shared.k_FA_to_ACoA * y[Index.muscle_fattyacid] * y[Index.muscle_ATP]
+        + p.shared.k_AA_to_ACoA * y[Index.muscle_aminoacid]
+        - p.shared.k_ACoA_to_P * y[Index.muscle_ACoA] * y[Index.muscle_NAD]**3 * y[Index.muscle_FAD]
     )
     # return dydt
 
 def NAD(t, y, p, dydt):
     # dydt = np.zeros(n)
-    dydt[12] = (
-        -2 * p.shared.k_G6P_to_P * y[8] * y[12]**2
-        + 2 * p.shared.k_P_to_G6P * y[10]**2 * y[17]**3 * y[13]**2
-        - p.shared.k_P_to_ACoA * y[10] * y[12]
-        - 3 * p.shared.k_ACoA_to_P * y[11] * y[12]**3 * y[14]
-        + 2 * p.M.NADH_ETC * y[13]**2
-        + p.M.k_P_to_L * y[10] * y[13]
-        - p.M.k_L_to_P * y[19] * y[12]
+    dydt[Index.muscle_NAD] = (
+        -2 * p.shared.k_G6P_to_P * y[Index.muscle_G6P] * y[Index.muscle_NAD]**2
+        + 2 * p.shared.k_P_to_G6P * y[Index.muscle_pyruvate]**2 * y[Index.muscle_ATP]**3 * y[Index.muscle_NADH]**2
+        - p.shared.k_P_to_ACoA * y[Index.muscle_pyruvate] * y[Index.muscle_NAD]
+        - 3 * p.shared.k_ACoA_to_P * y[Index.muscle_ACoA] * y[Index.muscle_NAD]**3 * y[Index.muscle_FAD]
+        + 2 * p.M.NADH_ETC * y[Index.muscle_NADH]**2
+        + p.M.k_P_to_L * y[Index.muscle_pyruvate] * y[Index.muscle_NADH]
+        - p.M.k_L_to_P * y[Index.muscle_lactate] * y[Index.muscle_NAD]
     )
     # return dydt
 
 def NADH(t, y, p, dydt):
     # dydt = np.zeros(n)
-    dydt[13] = (
-        2 * p.shared.k_G6P_to_P * y[8] * y[12]**2
-        - 2 * p.shared.k_P_to_G6P * y[10]**2 * y[17]**3 * y[13]**2
-        + p.shared.k_P_to_ACoA * y[10] * y[12]
-        + 3 * p.shared.k_ACoA_to_P * y[11] * y[12]**3 * y[14]
-        - 2 * p.M.NADH_ETC * y[13]**2
-        - p.M.k_P_to_L * y[10] * y[13]
-        + p.M.k_L_to_P * y[19] * y[12]
+    dydt[Index.muscle_NADH] = (
+        2 * p.shared.k_G6P_to_P * y[Index.muscle_G6P] * y[Index.muscle_NAD]**2
+        - 2 * p.shared.k_P_to_G6P * y[Index.muscle_pyruvate]**2 * y[Index.muscle_ATP]**3 * y[Index.muscle_NADH]**2
+        + p.shared.k_P_to_ACoA * y[Index.muscle_pyruvate] * y[Index.muscle_NAD]
+        + 3 * p.shared.k_ACoA_to_P * y[Index.muscle_ACoA] * y[Index.muscle_NAD]**3 * y[Index.muscle_FAD]
+        - 2 * p.M.NADH_ETC * y[Index.muscle_NADH]**2
+        - p.M.k_P_to_L * y[Index.muscle_pyruvate] * y[Index.muscle_NADH]
+        + p.M.k_L_to_P * y[Index.muscle_lactate] * y[Index.muscle_NAD]
     )
     # return dydt
 
 def FAD(t, y, p, dydt):
     # dydt = np.zeros(n)
-    dydt[14] = (
-        -p.shared.k_ACoA_to_P * y[11] * y[12]**3 * y[14]
-        + 2 * p.M.FADH2_ETC * y[15]**2
+    dydt[Index.muscle_FAD] = (
+        -p.shared.k_ACoA_to_P * y[Index.muscle_ACoA] * y[Index.muscle_NAD]**3 * y[Index.muscle_FAD]
+        + 2 * p.M.FADH2_ETC * y[Index.muscle_FADH2]**2
     )
     # return dydt
 
 def FADH2(t, y, p, dydt):
     # dydt = np.zeros(n)
-    dydt[15] = (
-        p.shared.k_ACoA_to_P * y[11] * y[12]**3 * y[14]
-        - 2 * p.M.FADH2_ETC * y[15]**2
+    dydt[Index.muscle_FADH2] = (
+        p.shared.k_ACoA_to_P * y[Index.muscle_ACoA] * y[Index.muscle_NAD]**3 * y[Index.muscle_FAD]
+        - 2 * p.M.FADH2_ETC * y[Index.muscle_FADH2]**2
     )
     # return dydt
 
@@ -183,39 +183,39 @@ def ROS(t, y, p, dydt):
     ROSpercent = 0.02
     # 1-2% of molecular oxygen is converted to superoxide owing to electron leak
     # dydt = np.zeros(n)
-    dydt[16] = ROSpercent * (
-        p.shared.k_ACoA_to_P * y[11] * y[12]**3 * y[14]
-        + p.M.FADH2_ETC * y[15]**2
-        + p.M.NADH_ETC * y[13]**2
-        + p.shared.k_FA_to_ACoA * y[5] * y[17]
-        + p.shared.k_AA_to_ACoA * y[7]
+    dydt[Index.muscle_ROS] = ROSpercent * (
+        p.shared.k_ACoA_to_P * y[Index.muscle_ACoA] * y[Index.muscle_NAD]**3 * y[Index.muscle_FAD]
+        + p.M.FADH2_ETC * y[Index.muscle_FADH2]**2
+        + p.M.NADH_ETC * y[Index.muscle_NADH]**2
+        + p.shared.k_FA_to_ACoA * y[Index.muscle_fattyacid] * y[Index.muscle_ATP]
+        + p.shared.k_AA_to_ACoA * y[Index.muscle_aminoacid]
     )
     # return dydt
 
 
 def ATP(t, y, p, dydt):
     # dydt = np.zeros(n)
-    dydt[17] = (
-        -p.shared.k_G_to_G6P * y[2] * y[17]
-        + p.shared.k_G6P_to_G * y[8]
-        + 3 * p.shared.k_G6P_to_P * y[8] * y[12]**2
-        - 3 * p.shared.k_P_to_G6P * y[10]**2 * y[17]**3 * y[13]**2
-        + p.shared.k_ACoA_to_P * y[11] * y[12]**3 * y[14]
-        + 3 * p.M.FADH2_ETC * y[15]**2
-        + 5 * p.M.NADH_ETC * y[13]**2
-        - p.shared.k_FA_to_ACoA * y[5] * y[17]
-        - p.CL.kCL_ATP * y[17]
+    dydt[Index.muscle_ATP] = (
+        -p.shared.k_G_to_G6P * y[Index.plasma_insulin] * y[Index.muscle_ATP]
+        + p.shared.k_G6P_to_G * y[Index.muscle_G6P]
+        + 3 * p.shared.k_G6P_to_P * y[Index.muscle_G6P] * y[Index.muscle_NAD]**2
+        - 3 * p.shared.k_P_to_G6P * y[Index.muscle_pyruvate]**2 * y[Index.muscle_ATP]**3 * y[Index.muscle_NADH]**2
+        + p.shared.k_ACoA_to_P * y[Index.muscle_ACoA] * y[Index.muscle_NAD]**3 * y[Index.muscle_FAD]
+        + 3 * p.M.FADH2_ETC * y[Index.muscle_FADH2]**2
+        + 5 * p.M.NADH_ETC * y[Index.muscle_NADH]**2
+        - p.shared.k_FA_to_ACoA * y[Index.muscle_fattyacid] * y[Index.muscle_ATP]
+        - p.CL.kCL_ATP * y[Index.muscle_ATP]
     )
     # return dydt
 
 def lactate(t, y, p, dydt):
     # dydt = np.zeros(n)
-    dydt[18] = (
-        (-p.CL.kCL_FA * y[18] * p.V.plasma + p.CL.kCL_FA * y[19] * p.V.muscle) / p.V.plasma
+    dydt[Index.plasma_lactate] = (
+        (-p.CL.kCL_FA * y[Index.plasma_lactate] * p.V.plasma + p.CL.kCL_FA * y[Index.muscle_lactate] * p.V.muscle) / p.V.plasma
     )
-    dydt[19] = (
-        (p.CL.kCL_FA * y[18] * p.V.plasma - p.CL.kCL_FA * y[19] * p.V.muscle) / p.V.muscle
-        + p.M.k_P_to_L * y[10] * y[13] - p.M.k_L_to_P * y[19] * y[12]
+    dydt[Index.muscle_lactate] = (
+        (p.CL.kCL_FA * y[Index.plasma_lactate] * p.V.plasma - p.CL.kCL_FA * y[Index.muscle_lactate] * p.V.muscle) / p.V.muscle
+        + p.M.k_P_to_L * y[Index.muscle_pyruvate] * y[Index.muscle_NADH] - p.M.k_L_to_P * y[Index.muscle_lactate] * y[Index.muscle_NAD]
     )
     # return dydt
 
@@ -225,7 +225,8 @@ def muscle_init():
             plasma=5.0,
             gut=0.0,
             liver=0.0,
-            fat=0.0,
+            subq=0.0,
+            vsc=0.0,
             muscle=25.0,
             pancreas=0.0,
             brain=0.0
@@ -266,29 +267,8 @@ def muscle_init():
             k_P_to_L=0.1,                # pyruvate_to_lactate
             k_L_to_P=0.1                 # lactate_to_pyruvate
         ),
-        F=FatParameters(
-            k_insulin_from_plasma=0.0,
-            k_insulin_to_plasma=0.0,
-            k_FA_from_plasma=0.0,
-            k_FA_to_plasma=0.0,
-            k_G_from_plasma=0.0,
-            k_G_to_plasma=0.0,
-            k_AA_from_plasma=0.0,
-            k_AA_to_plasma=0.0,
-            k_FA_to_TAG=0.0,
-            k_TAG_to_FA=0.0
-        ),
-        GI=GIParameters(
-            kabs_G=0.0,
-            kabs_F=0.0,
-            kabs_FA=0.0,
-            k_diffusion_micelle_to_membrane=0.0,
-            k_Vmax_trans=0.0,
-            k_Vmax_reester=0.0,
-            k_Vmax_export=0.0,
-            Km_trans=0.0,
-            Km_reester=0.0,
-            Km_export=0.0
-        )
+        Subq=None,
+        Vsc=None,
+        GI=None
     )
     return p
