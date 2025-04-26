@@ -14,8 +14,8 @@ class Index(IntEnum):
     subq_aminoacid=auto()
     subq_G6P=auto()
     subq_TAG=auto()
-    subq_ACoA=auto()
     subq_pyruvate=auto()
+    subq_ACoA=auto()
     subq_ROS=auto()
 
     # vsc_glucose=auto()
@@ -24,8 +24,8 @@ class Index(IntEnum):
     # vsc_aminoacid=auto()
     # vsc_G6P=auto()
     # vsc_TAG=auto()
-    # vsc_ACoA=auto()
     # vsc_pyruvate=auto()
+    # vsc_ACoA=auto()
     # vsc_ROS=auto()
 
     muscle_glucose=auto()
@@ -122,7 +122,8 @@ class Volumes:
     plasma  : float
     gut     : float
     liver   : float
-    fat     : float
+    subq    : float
+    vsc     : float
     muscle  : float
     pancreas: float
     brain   : float
@@ -202,8 +203,9 @@ class Parameters:
     shared : SharedRates
     CL     : ClearanceRates
     M      : MuscleParameters
-    F  : FatParameters
-    # Vsc    : FatParameters
+    Subq   : FatParameters
+    Vsc    : FatParameters
     GI     : GIParameters
 
 if __name__ == "__main__":
+    pass
