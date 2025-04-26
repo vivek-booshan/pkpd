@@ -13,12 +13,14 @@
 # 12 ROS fat
 import numpy as np
 from parameters import *
+ 
 
 def fat_init():
     p = Parameters(
         V=Volumes(
             plasma=5.0,
-            fat=11.0,
+            subq=11.0,
+            vsc=1,
             gut=0.0,
             liver=0.0,
             muscle=0.0,
@@ -43,7 +45,7 @@ def fat_init():
             kCL_F=0.0,
             kCL_FA=0.0
         ),
-        F=FatParameters(
+        Subq=FatParameters(
             k_insulin_from_plasma=1.0,
             k_insulin_to_plasma=0.1,
             k_FA_from_plasma=2.0,
@@ -55,6 +57,18 @@ def fat_init():
             k_FA_to_TAG=1.0,               # fattyacids_to_triglycerides
             k_TAG_to_FA=0.1                # triglycerides_to_fattyacids
         ),
+        Vsc=FatParameters(
+            k_insulin_from_plasma=2.0,
+            k_insulin_to_plasma=0.1,
+            k_FA_from_plasma=4,
+            k_FA_to_plasma=0.2,
+            k_G_from_plasma=2.0,
+            k_G_to_plasma=0.1,
+            k_AA_from_plasma=2.0,
+            k_AA_to_plasma=0.1,
+            k_FA_to_TAG=1.0,               # fattyacids_to_triglycerides
+            k_TAG_to_FA=0.0005             # triglycerides_to_fattyacids
+        ),
         M=None,
         GI=None,
     )
@@ -63,6 +77,7 @@ def fat_init():
 
 def fat(t, y, p, n):
     dydt = np.zeros(n)
+
     glucose(t, y, p, dydt)
     insulin(t, y, p, dydt)
     fattyacids(t, y, p, dydt)
@@ -73,46 +88,57 @@ def fat(t, y, p, n):
     acetylcoa(t, y, p, dydt)
     ROS(t, y, p, dydt)
 
-    # dydt = dglucose + dinsulin + dfattyacids + daminoacids + dg6p + dtriglycerides + dpyruvate + dacetylcoa + dROS
     return dydt
 
 
 def glucose(t, y, p, dydt):
-    # dydt = np.zeros(n)
-    dydt[0] = (
-        (-p.F.k_G_from_plasma * y[0] * p.V.plasma + p.F.k_G_to_plasma * y[1] * p.V.fat) / p.V.plasma
+    dydt[Index.plasma_glucose] = (
+        + (-p.Subq.k_G_from_plasma * y[Index.plasma_glucose] * p.V.plasma + p.Subq.k_G_to_plasma * y[Index.subq_glucose] * p.V.subq) / p.V.plasma
+        # + (-p.Vsc.k_G_from_plasma * y[Index.plasma_glucose] * p.V.plasma + p.Vsc.k_G_to_plasma * y[Index.vsc_glucose] * p.V.vsc) / p.V.plasma
     )
-    dydt[1] = (
-        (p.F.k_G_from_plasma * y[0] * p.V.plasma - p.F.k_G_to_plasma * y[1] * p.V.fat) / p.V.fat
-        - p.shared.k_G_to_G6P * y[1] + p.shared.k_G6P_to_G * y[8]
+    dydt[Index.subq_glucose] = (
+        + (p.Subq.k_G_from_plasma * y[Index.plasma_glucose] * p.V.plasma - p.Subq.k_G_to_plasma * y[Index.subq_glucose] * p.V.subq) / p.V.subq
+        - p.shared.k_G_to_G6P * y[Index.subq_glucose] + p.shared.k_G6P_to_G * y[Index.subq_G6P]
     )
-    # return dydt
+    # dydt[Index.vsc_glucose] = (
+    #     + (p.Vsc.k_G_from_plasma * y[Index.plasma_glucose] * p.V.plasma - p.Vsc.k_G_to_plasma * y[Index.vsc_glucose] * p.V.vsc) / p.V.vsc
+    #     - p.shared.k_G_to_G6P * y[Index.vsc_glucose] + p.shared.k_G6P_to_G * y[Index.vsc_G6P]
+    # )
 
 
 def insulin(t, y, p, dydt):
-    # dydt = np.zeros(n)
-    dydt[2] = (
-        (-p.F.k_insulin_from_plasma * y[2] * p.V.plasma + p.F.k_insulin_to_plasma * y[3] * p.V.fat) / p.V.plasma
+    dydt[Index.plasma_insulin] = (
+        + (
+            - p.Subq.k_insulin_from_plasma * y[Index.plasma_insulin] * p.V.plasma
+            + p.Subq.k_insulin_to_plasma * y[Index.subq_insulin] * p.V.subq
+        ) / p.V.plasma
+        + (
+            - p.Vsc.k_insulin_from_plasma * y[Index.plasma_insulin] * p.V.plasma
+            + p.Vsc.k_insulin_to_plasma * y[Index.vsc_insulin] * p.V.vsc
+        ) / p.V.plasma
     )
-    dydt[3] = (
-        + (p.F.k_insulin_from_plasma * y[2] * p.V.plasma - p.F.k_insulin_to_plasma * y[3] * p.V.fat) / p.V.fat
-        - p.CL.kCL_insulin * y[3]
     )
-    # return dydt
+    # dydt[Index.subq_insulin] = (
+    #     + (p.Subq.k_insulin_from_plasma * y[Index.plasma_insulin] * p.V.plasma - p.Subq.k_insulin_to_plasma * y[Index.subq_insulin] * p.V.subq) / p.V.subq
+    #     - p.CL.kCL_insulin * y[Index.subq_insulin]
+    # )
 
 def fattyacids(t, y, p, dydt):
     Km = 1
     # dydt = np.zeros(n)
     
-    dydt[4] = (
-        (-p.F.k_FA_from_plasma * y[4] * p.V.plasma + p.F.k_FA_to_plasma * y[5] * p.V.fat) / p.V.plasma
+    dydt[Index.plasma_fattyacid] = (
+        (
+            - p.Subq.k_FA_from_plasma * y[Index.plasma_fattyacid] * p.V.plasma
+            + p.Subq.k_FA_to_plasma * y[Index.subq_fattyacid] * p.V.subq
+        ) / p.V.plasma
     )
-    dydt[5] = (
-        + (p.F.k_FA_from_plasma * y[4] * p.V.plasma - p.F.k_FA_to_plasma * y[5] * p.V.fat) / p.V.fat
-        - p.shared.k_FA_to_ACoA * y[5]
-        - 3 * (p.F.k_FA_to_TAG * p.V.fat * y[5] / (Km + y[5] * p.V.fat))**3
-        + 3 * p.F.k_TAG_to_FA * y[9]
-        + p.shared.k_ACoA_to_FA * y[11]
+    dydt[Index.subq_fattyacid] = (
+        + (p.Subq.k_FA_from_plasma * y[Index.plasma_fattyacid] * p.V.plasma - p.Subq.k_FA_to_plasma * y[Index.subq_fattyacid] * p.V.subq) / p.V.subq
+        - p.shared.k_FA_to_ACoA * y[Index.subq_fattyacid]
+        - 3 * (p.Subq.k_FA_to_TAG * p.V.subq * y[Index.subq_fattyacid] / (Km + y[Index.subq_fattyacid] * p.V.subq))**3
+        + 3 * p.Subq.k_TAG_to_FA * y[Index.subq_TAG]
+        + p.shared.k_ACoA_to_FA * y[Index.subq_ACoA]
     )
     # return dydt
 
@@ -120,12 +146,18 @@ def fattyacids(t, y, p, dydt):
 def aminoacids(t, y, p, dydt):
     # dydt = np.zeros(n)
 
-    dydt[6] = (
-        (-p.F.k_AA_from_plasma * y[6] * p.V.plasma + p.F.k_AA_to_plasma * y[7] * p.V.fat) / p.V.plasma
+    dydt[Index.plasma_aminoacid] = (
+        (
+            - p.Subq.k_AA_from_plasma * y[Index.plasma_aminoacid] * p.V.plasma
+            + p.Subq.k_AA_to_plasma * y[Index.subq_aminoacid] * p.V.subq
+        ) / p.V.plasma
     )
-    dydt[7] = (
-        + (p.F.k_AA_from_plasma * y[6] * p.V.plasma - p.F.k_AA_to_plasma * y[7] * p.V.fat) / p.V.fat
-        - p.shared.k_AA_to_ACoA * y[7]
+    dydt[Index.subq_aminoacid] = (
+        + (
+            + p.Subq.k_AA_from_plasma * y[Index.plasma_aminoacid] * p.V.plasma
+            - p.Subq.k_AA_to_plasma * y[Index.subq_aminoacid] * p.V.subq
+        ) / p.V.subq
+        - p.shared.k_AA_to_ACoA * y[Index.subq_aminoacid]
     )
     # return dydt
 
@@ -133,11 +165,11 @@ def aminoacids(t, y, p, dydt):
 def g6p(t, y, p, dydt):
     # dydt = np.zeros(n)
     
-    dydt[8] = (
-        + p.shared.k_G_to_G6P * y[1]
-        - p.shared.k_G6P_to_G * y[8]
-        - p.shared.k_G6P_to_P * y[8]
-        + p.shared.k_P_to_G6P * y[10]**2
+    dydt[Index.subq_G6P] = (
+        + p.shared.k_G_to_G6P * y[Index.subq_glucose]
+        - p.shared.k_G6P_to_G * y[Index.subq_G6P]
+        - p.shared.k_G6P_to_P * y[Index.subq_G6P]
+        + p.shared.k_P_to_G6P * y[Index.subq_pyruvate]**2
     )
     # return dydt
 
@@ -146,9 +178,9 @@ def triglycerides(t, y, p, dydt):
     Km = 1
     # dydt = np.zeros(n)
 
-    dydt[9] = (
-        + (p.F.k_FA_to_TAG * p.V.fat * y[5] / (Km + y[5] * p.V.fat))**3
-        - p.F.k_TAG_to_FA * y[9]
+    dydt[Index.subq_TAG] = (
+        + (p.Subq.k_FA_to_TAG * p.V.subq * y[Index.subq_fattyacid] / (Km + y[Index.subq_fattyacid] * p.V.subq))**3
+        - p.Subq.k_TAG_to_FA * y[Index.subq_TAG]
     )
     # return dydt
 
@@ -156,10 +188,10 @@ def triglycerides(t, y, p, dydt):
 def pyruvate(t, y, p, dydt):
     # dydt = np.zeros(n)
 
-    dydt[10] = (
-        + 2 * p.shared.k_G6P_to_P * y[8]
-        - 2 * p.shared.k_P_to_G6P * y[10]**2
-        - p.shared.k_P_to_ACoA * y[10]
+    dydt[Index.subq_pyruvate] = (
+        + 2 * p.shared.k_G6P_to_P * y[Index.subq_G6P]
+        - 2 * p.shared.k_P_to_G6P * y[Index.subq_pyruvate]**2
+        - p.shared.k_P_to_ACoA * y[Index.subq_pyruvate]
     )
     # return dydt
 
@@ -167,11 +199,11 @@ def pyruvate(t, y, p, dydt):
 def acetylcoa(t, y, p, dydt):
     # dydt = np.zeros(n)
 
-    dydt[11] = (
-        + p.shared.k_P_to_ACoA * y[10]
-        + 8 * p.shared.k_FA_to_ACoA * y[5]
-        + p.shared.k_AA_to_ACoA * y[7]
-        - 8 * p.shared.k_ACoA_to_FA * y[11]
+    dydt[Index.subq_ACoA] = (
+        + p.shared.k_P_to_ACoA * y[Index.subq_pyruvate]
+        + 8 * p.shared.k_FA_to_ACoA * y[Index.subq_fattyacid]
+        + p.shared.k_AA_to_ACoA * y[Index.subq_aminoacid]
+        - 8 * p.shared.k_ACoA_to_FA * y[Index.subq_ACoA]
     )
     # return dydt
 
@@ -182,12 +214,12 @@ def ROS(t, y, p, dydt):
 
     # dydt = np.zeros(n)
 
-    dydt[12] = ROSpercent * (
-        p.shared.k_FA_to_ACoA * y[5]
-        + p.shared.k_AA_to_ACoA * y[7]
-        + 3 * (p.F.k_FA_to_TAG * p.V.fat * y[5] / (Km + y[5] * p.V.fat))**3
-        + 3 * p.F.k_TAG_to_FA * y[9]
-        + 8 * p.shared.k_ACoA_to_FA * y[11]
+    dydt[Index.subq_ROS] = ROSpercent * (
+        p.shared.k_FA_to_ACoA * y[Index.subq_fattyacid]
+        + p.shared.k_AA_to_ACoA * y[Index.subq_aminoacid]
+        + 3 * (p.Subq.k_FA_to_TAG * p.V.subq * y[Index.subq_fattyacid] / (Km + y[Index.subq_fattyacid] * p.V.subq))**3
+        + 3 * p.Subq.k_TAG_to_FA * y[Index.subq_TAG]
+        + 8 * p.shared.k_ACoA_to_FA * y[Index.subq_ACoA]
     )
 
     # return dydt
