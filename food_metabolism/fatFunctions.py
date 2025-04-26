@@ -122,6 +122,10 @@ def insulin(t, y, p, dydt):
         + (p.Subq.k_insulin_from_plasma * y[Index.plasma_insulin] * p.V.plasma - p.Subq.k_insulin_to_plasma * y[Index.subq_insulin] * p.V.subq) / p.V.subq
         - p.CL.kCL_insulin * y[Index.subq_insulin]
     )
+    dydt[Index.vsc_insulin] = (
+        + (p.Vsc.k_insulin_from_plasma * y[Index.plasma_insulin] * p.V.plasma - p.Vsc.k_insulin_to_plasma * y[Index.vsc_insulin] * p.V.vsc) / p.V.vsc
+        - p.CL.kCL_insulin * y[Index.vsc_insulin]
+    )
 
 def fattyacids(t, y, p, dydt):
     Km = 1
