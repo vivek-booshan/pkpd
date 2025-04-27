@@ -5,12 +5,13 @@ from .pancreas import __pancreas
 from .index import Index
 from .parameters import *
 
+import numpy as np
 def system(t: float, y: np.ndarray, p: Parameters) -> np.ndarray:
     dydt = np.zeros(len(Index))
     __fat(t, y, p, dydt)
-    __gi(t, y, p, dydt)
+    __GI(t, y, p, dydt)
     __muscle(t, y, p, dydt)
-    __pancreas(t, y, p, dydt)
+    __pancreas(t, y, dydt)
     return dydt
 
 def init() -> Parameters:
