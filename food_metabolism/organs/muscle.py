@@ -2,7 +2,7 @@ import numpy as np
 from organs.parameters import *
 from organs.index import Index
 
-def skeletalmuscle(t, y, p):
+def skeletalmuscle(t: float, y: np.ndarray, p: Parameters) -> np.ndarray:
     """
     The skeletalmuscle function computes the rate of change (dydt) for various metabolites 
     and processes in the skeletal muscle compartment of a metabolic model.

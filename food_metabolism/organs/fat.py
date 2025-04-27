@@ -57,7 +57,7 @@ def fat_init():
     return p
 
 
-def fat(t, y, p):
+def fat(t: float, y: np.ndarray, p: Parameters) -> np.ndarray:
     """
     The fat function computes the rate of change (dydt) for various metabolites 
     and processes in the adipose tissue (fat) compartment of a metabolic model.
@@ -70,14 +70,6 @@ def fat(t, y, p):
         t (float): The current time point (in the simulation's time units).
         y (np.ndarray): The state vector representing the current concentrations or amounts of metabolites.
         p (object): A parameters object containing rate constants and volume information.
-        n (int): The total number of state variables in the system.
-
-    Processes:
-        Computes the rates of change for various metabolic processes in adipose tissue.
-        Includes processes like glucose uptake, fatty acid metabolism, triglyceride formation, and ROS production.
-
-    Updates:
-        The function updates the `dydt` array to reflect the computed rate of change for each state variable.
 
     Returns:
         dydt (np.ndarray): The array of rate-of-change values for each state variable, which is used in 

@@ -47,7 +47,7 @@ def giInit():
     )
     return p
 
-def GI(t, y, p):
+def GI(t: float, y: np.ndarray, p: Parameters) -> np.ndarray:
     """
     The GI function computes the rate of change (dydt) for various metabolites in the gastrointestinal 
     (GI) compartment of a metabolic model, including glucose, fructose, and fatty acid metabolism.
