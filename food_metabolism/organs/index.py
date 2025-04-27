@@ -24,15 +24,17 @@ class Index(IntEnum):
     """
     plasma_glucose=0
     plasma_fructose=auto()
-    plasma_insulin=auto()
     plasma_fattyacid=auto()
     plasma_aminoacid=auto()
     plasma_lactate=auto()
+    plasma_insulin=auto()
+    plasma_glucagon=auto()
+    plasma_somatostatin=auto()
 
     subq_glucose=auto()
-    subq_insulin=auto()
     subq_fattyacid=auto()
     subq_aminoacid=auto()
+    subq_insulin=auto()
     subq_G6P=auto()
     subq_TAG=auto()
     subq_pyruvate=auto()
@@ -72,66 +74,128 @@ class Index(IntEnum):
     cytosol_fattyacid=auto()
     cytosol_TAG=auto()
 
-def get_plasma_indices(index: Index):
-    return tuple(
-        index.plasma_glucose,
-        index.plasma_insulin,
-        index.plasma_fattyacid,
-        index.plasma_aminoacid,
-        index.plasma_lactate,
+def get_plasma_indices():
+    return (
+        Index.plasma_glucose,
+        Index.plasma_insulin,
+        Index.plasma_fattyacid,
+        Index.plasma_aminoacid,
+        Index.plasma_lactate,
     )
 
-def get_subq_indices(index: Index):
-    return tuple(
-        index.subq_glucose,
-        index.subq_insulin,
-        index.subq_fattyacid,
-        index.subq_aminoacid,
-        index.subq_G6P,
-        index.subq_TAG,
-        index.subq_ACoA,
-        index.subq_pyruvate,
-        index.subq_ROS,
+def get_plasma_names():
+    return (
+        Index.plasma_glucose.name,
+        Index.plasma_insulin.name,
+        Index.plasma_fattyacid.name,
+        Index.plasma_aminoacid.name,
+        Index.plasma_lactate.name,
     )
 
-def get_vsc_indices(index: Index):
-    return tuple(
-        index.vsc_glucose,
-        index.vsc_insulin,
-        index.vsc_fattyacid,
-        index.vsc_aminoacid,
-        index.vsc_G6P,
-        index.vsc_TAG,
-        index.vsc_ACoA,
-        index.vsc_pyruvate,
-        index.vsc_ROS,
+def get_subq_indices():
+    return (
+        Index.subq_glucose,
+        Index.subq_insulin,
+        Index.subq_fattyacid,
+        Index.subq_aminoacid,
+        Index.subq_G6P,
+        Index.subq_TAG,
+        Index.subq_ACoA,
+        Index.subq_pyruvate,
+        Index.subq_ROS,
     )
 
-def get_muscle_indices(index: Index):
-    return tuple(
-        index.muscle_glucose,
-        index.muscle_insulin,
-        index.muscle_fattyacid,
-        index.muscle_aminoacid,
-        index.muscle_G6P,
-        index.muscle_glycogen,
-        index.muscle_pyruvate,
-        index.muscle_AcoA,
-        index.muscle_NAD,
-        index.muscle_NADH,
-        index.muscle_FAD,
-        index.muscle_FADH2,
-        index.muscle_ROS,
-        index.muscle_ATP,
-        index.muscle_lactate,
+def get_subq_names():
+    return (
+        Index.subq_glucose.name,
+        Index.subq_insulin.name,
+        Index.subq_fattyacid.name,
+        Index.subq_aminoacid.name,
+        Index.subq_G6P.name,
+        Index.subq_TAG.name,
+        Index.subq_ACoA.name,
+        Index.subq_pyruvate.name,
+        Index.subq_ROS.name,
     )
 
-def get_gut_indices(index: Index):
-    return tuple(
-        index.gut_glucose,
-        index.gut_fructose,
-        index.micellar_fattyacid,
-        index.membrane_fattyacid,
-        index.cytosol_fattyacid,
-        index.cytosol_TAG,
+def get_vsc_indices():
+    return (
+        Index.vsc_glucose,
+        Index.vsc_insulin,
+        Index.vsc_fattyacid,
+        Index.vsc_aminoacid,
+        Index.vsc_G6P,
+        Index.vsc_TAG,
+        Index.vsc_ACoA,
+        Index.vsc_pyruvate,
+        Index.vsc_ROS,
+    )
+def get_vsc_names():
+    return (
+        Index.vsc_glucose.name,
+        Index.vsc_insulin.name,
+        Index.vsc_fattyacid.name,
+        Index.vsc_aminoacid.name,
+        Index.vsc_G6P.name,
+        Index.vsc_TAG.name,
+        Index.vsc_ACoA.name,
+        Index.vsc_pyruvate.name,
+        Index.vsc_ROS.name,
+    )
+
+def get_muscle_indices():
+    return (
+        Index.muscle_glucose,
+        Index.muscle_insulin,
+        Index.muscle_fattyacid,
+        Index.muscle_aminoacid,
+        Index.muscle_G6P,
+        Index.muscle_glycogen,
+        Index.muscle_pyruvate,
+        Index.muscle_ACoA,
+        Index.muscle_NAD,
+        Index.muscle_NADH,
+        Index.muscle_FAD,
+        Index.muscle_FADH2,
+        Index.muscle_ROS,
+        Index.muscle_ATP,
+        Index.muscle_lactate,
+    )
+
+def get_muscle_names():
+    return (
+        Index.muscle_glucose.name,
+        Index.muscle_insulin.name,
+        Index.muscle_fattyacid.name,
+        Index.muscle_aminoacid.name,
+        Index.muscle_G6P.name,
+        Index.muscle_glycogen.name,
+        Index.muscle_pyruvate.name,
+        Index.muscle_ACoA.name,
+        Index.muscle_NAD.name,
+        Index.muscle_NADH.name,
+        Index.muscle_FAD.name,
+        Index.muscle_FADH2.name,
+        Index.muscle_ROS.name,
+        Index.muscle_ATP.name,
+        Index.muscle_lactate.name,
+    )
+
+def get_gut_indices():
+    return (
+        Index.gut_glucose,
+        Index.gut_fructose,
+        Index.micellar_fattyacid,
+        Index.membrane_fattyacid,
+        Index.cytosol_fattyacid,
+        Index.cytosol_TAG,
+    )
+def get_gut_names():
+    return (
+        Index.gut_glucose.name,
+        Index.gut_fructose.name,
+        Index.micellar_fattyacid.name,
+        Index.membrane_fattyacid.name,
+        Index.cytosol_fattyacid.name,
+        Index.cytosol_TAG.name,
     )
