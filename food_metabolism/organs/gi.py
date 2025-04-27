@@ -2,51 +2,6 @@ import numpy as np
 from .parameters import *
 from .index import Index
 
-def giInit():
-    p = Parameters(
-        V=Volumes(
-            plasma=5.0,
-            subq=11.0,
-            vsc=1.0,
-            gut=1.25,
-            liver=0.0,
-            muscle=0.0,
-            pancreas=0.0,
-            brain=0.0
-        ),
-        Shared=SharedRates(
-            k_P_to_ACoA=1.0,               # pyruvate_to_acetylcoa
-            k_ACoA_to_P=0.0,               # unused
-            k_FA_to_ACoA=1 / 8,            # fattyacids_to_acetylcoa
-            k_AA_to_ACoA=1 / 4,            # aminoacids_to_acetylcoa
-            k_ACoA_to_FA=1.0,              # acetylcoa_to_fattyacids
-            k_G_to_G6P=1.0,                # glucose_to_g6p
-            k_G6P_to_G=0.1,                # g6p_to_glucose
-            k_P_to_G6P=0.1,                # pyruvate_to_g6p
-            k_G6P_to_P=1.0                 # g6p_to_pyruvate
-        ),
-        Subq=None,
-        Vsc=None,
-        M=None,
-        GI=GIParameters(
-            kabs_glucose=0.1,
-            kabs_fructose=0.1,
-            kabs_fattyacid=0.05,
-            k_diffusion_micelle_to_membrane=0.1,
-            k_Vmax_trans=5.0,
-            k_Vmax_reester=3.0,
-            k_Vmax_export=2.0,
-            Km_trans=10.0,
-            Km_reester=5.0,
-            Km_export=4.0,
-            kCL_glucose=0.05,
-            kCL_fructose=0.05,
-            kCL_fattyacid=0.1
-        )
-        # Pancreas is not being used, so not included
-    )
-    return p
-
 def GI(t: float, y: np.ndarray, p: Parameters) -> np.ndarray:
     """
     The GI function computes the rate of change (dydt) for various metabolites in the gastrointestinal 
@@ -85,11 +40,11 @@ def __GI(t, y, p, dydt):
         dydt (np.ndarray): The array of rate-of-change values for each state variable, used in numerical 
                             integration methods (e.g., `solve_ivp`) to simulate the system.
     """
-    glucose_two_compartment(t, y, p, dydt)
-    fructose_two_compartment(t, y, p, dydt)
-    fatty_acid_full_model(t, y, p, dydt)
+    __glucose_two_compartment(t, y, p, dydt)
+    __fructose_two_compartment(t, y, p, dydt)
+    __fatty_acid_full_model(t, y, p, dydt)
 
-def glucose_two_compartment(t, y, p, dydt):
+def __glucose_two_compartment(t, y, p, dydt):
     V_gut = p.V.gut
     V_blood = p.V.plasma  # Using plasma as "blood" pool
 
@@ -99,7 +54,7 @@ def glucose_two_compartment(t, y, p, dydt):
     dydt[Index.gut_glucose] += -(kabs * y[Index.gut_glucose] * V_gut) / V_gut
     dydt[Index.plasma_glucose] += ((kabs * y[Index.gut_glucose] * V_gut) - (kclear * y[Index.plasma_glucose]* V_blood)) / V_blood
 
-def fructose_two_compartment(t, y, p, dydt):
+def __fructose_two_compartment(t, y, p, dydt):
     V_gut = p.V.gut
     V_blood = p.V.plasma
 
@@ -109,7 +64,7 @@ def fructose_two_compartment(t, y, p, dydt):
     dydt[Index.gut_fructose] += -(kabs * y[Index.gut_fructose] * V_gut) / V_gut
     dydt[Index.plasma_fructose] += ((kabs * y[Index.gut_fructose] * V_gut) - (kclear * y[Index.plasma_fructose] * V_blood)) / V_blood
 
-def fatty_acid_full_model(t, y, p, dydt):
+def __fatty_acid_full_model(t, y, p, dydt):
     GI = p.GI
     V_blood = p.V.plasma
 

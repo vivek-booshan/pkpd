@@ -2,61 +2,6 @@ import numpy as np
 from .parameters import *
 from .index import Index
 
-def fat_init():
-    p = Parameters(
-        V=Volumes(
-            plasma=5.0,
-            subq=11.0,
-            vsc=1,
-            gut=0.0,
-            liver=0.0,
-            muscle=0.0,
-            pancreas=0.0,
-            brain=0.0
-        ),
-        Shared=SharedRates(
-            k_P_to_ACoA=1.0,               # pyruvate_to_acetylcoa
-            k_ACoA_to_P=0.0,               # unused
-            k_FA_to_ACoA=1 / 8,            # fattyacids_to_acetylcoa
-            k_AA_to_ACoA=1 / 4,            # aminoacids_to_acetylcoa
-            k_ACoA_to_FA=1.0,              # acetylcoa_to_fattyacids
-            k_G_to_G6P=1.0,                # glucose_to_g6p
-            k_G6P_to_G=0.1,                # g6p_to_glucose
-            k_P_to_G6P=0.1,                # pyruvate_to_g6p
-            k_G6P_to_P=1.0                 # g6p_to_pyruvate
-        ),
-        Subq=FatParameters(
-            k_insulin_from_plasma=1.0,
-            k_insulin_to_plasma=0.1,
-            k_FA_from_plasma=2.0,
-            k_FA_to_plasma=0.2,
-            k_G_from_plasma=1.0,
-            k_G_to_plasma=0.1,
-            k_AA_from_plasma=1.0,
-            k_AA_to_plasma=0.1,
-            k_FA_to_TAG=1.0,               # fattyacids_to_triglycerides
-            k_TAG_to_FA=0.1,                # triglycerides_to_fattyacids
-            kCL_insulin=1.0
-        ),
-        Vsc=FatParameters(
-            k_insulin_from_plasma=2.0,
-            k_insulin_to_plasma=0.1,
-            k_FA_from_plasma=4,
-            k_FA_to_plasma=0.2,
-            k_G_from_plasma=2.0,
-            k_G_to_plasma=0.1,
-            k_AA_from_plasma=2.0,
-            k_AA_to_plasma=0.1,
-            k_FA_to_TAG=1.0,               # fattyacids_to_triglycerides
-            k_TAG_to_FA=0.0005,             # triglycerides_to_fattyacids
-            kCL_insulin=1.0
-        ),
-        M=None,
-        GI=None,
-    )
-    return p
-
-
 def fat(t: float, y: np.ndarray, p: Parameters) -> np.ndarray:
     """
     The fat function computes the rate of change (dydt) for various metabolites 
@@ -95,17 +40,17 @@ def __fat(t, y, p, dydt):
         dydt (np.ndarray): The array of rate-of-change values for each state variable, which is used in 
                             numerical integration methods (e.g., `solve_ivp`) to simulate the system.
     """
-    glucose(t, y, p, dydt)
-    insulin(t, y, p, dydt)
-    fattyacids(t, y, p, dydt)
-    aminoacids(t, y, p, dydt)
-    g6p(t, y, p, dydt)
-    triglycerides(t, y, p, dydt)
-    pyruvate(t, y, p, dydt)
-    acetylcoa(t, y, p, dydt)
-    ROS(t, y, p, dydt)
+    __glucose(t, y, p, dydt)
+    __insulin(t, y, p, dydt)
+    __fattyacids(t, y, p, dydt)
+    __aminoacids(t, y, p, dydt)
+    __g6p(t, y, p, dydt)
+    __triglycerides(t, y, p, dydt)
+    __pyruvate(t, y, p, dydt)
+    __acetylcoa(t, y, p, dydt)
+    __ROS(t, y, p, dydt)
 
-def glucose(t, y, p, dydt):
+def __glucose(t, y, p, dydt):
     dydt[Index.plasma_glucose] += (
         + (-p.Subq.k_G_from_plasma * y[Index.plasma_glucose] * p.V.plasma + p.Subq.k_G_to_plasma * y[Index.subq_glucose] * p.V.subq) / p.V.plasma
         + (-p.Vsc.k_G_from_plasma * y[Index.plasma_glucose] * p.V.plasma + p.Vsc.k_G_to_plasma * y[Index.vsc_glucose] * p.V.vsc) / p.V.plasma
@@ -120,7 +65,7 @@ def glucose(t, y, p, dydt):
     )
 
 
-def insulin(t, y, p, dydt):
+def __insulin(t, y, p, dydt):
     dydt[Index.plasma_insulin] += (
         + (
             - p.Subq.k_insulin_from_plasma * y[Index.plasma_insulin] * p.V.plasma
@@ -141,7 +86,7 @@ def insulin(t, y, p, dydt):
         - p.Vsc.kCL_insulin * y[Index.vsc_insulin]
     )
 
-def fattyacids(t, y, p, dydt):
+def __fattyacids(t, y, p, dydt):
     Km = 1
     
     dydt[Index.plasma_fattyacid] += (
@@ -173,7 +118,7 @@ def fattyacids(t, y, p, dydt):
 
 
 
-def aminoacids(t, y, p, dydt):
+def __aminoacids(t, y, p, dydt):
     dydt[Index.plasma_aminoacid] += (
         + (
             - p.Subq.k_AA_from_plasma * y[Index.plasma_aminoacid] * p.V.plasma
@@ -202,7 +147,7 @@ def aminoacids(t, y, p, dydt):
     )
 
 
-def g6p(t, y, p, dydt):
+def __g6p(t, y, p, dydt):
     dydt[Index.subq_G6P] += (
         + p.Shared.k_G_to_G6P * y[Index.subq_glucose]
         - p.Shared.k_G6P_to_G * y[Index.subq_G6P]
@@ -217,7 +162,7 @@ def g6p(t, y, p, dydt):
     )
 
 
-def triglycerides(t, y, p, dydt):
+def __triglycerides(t, y, p, dydt):
     Km = 1
 
     dydt[Index.subq_TAG] += (
@@ -230,7 +175,7 @@ def triglycerides(t, y, p, dydt):
     )
 
 
-def pyruvate(t, y, p, dydt):
+def __pyruvate(t, y, p, dydt):
     dydt[Index.subq_pyruvate] += (
         + 2 * p.Shared.k_G6P_to_P * y[Index.subq_G6P]
         - 2 * p.Shared.k_P_to_G6P * y[Index.subq_pyruvate]**2
@@ -245,7 +190,7 @@ def pyruvate(t, y, p, dydt):
 
 
 
-def acetylcoa(t, y, p, dydt):
+def __acetylcoa(t, y, p, dydt):
     dydt[Index.subq_ACoA] += (
         + p.Shared.k_P_to_ACoA * y[Index.subq_pyruvate]
         + 8 * p.Shared.k_FA_to_ACoA * y[Index.subq_fattyacid]
@@ -259,8 +204,8 @@ def acetylcoa(t, y, p, dydt):
         - 8 * p.Shared.k_ACoA_to_FA * y[Index.vsc_ACoA]
     )
 
-def ROS(t, y, p, dydt):
-    # Fraction of reactions resulting in ROS (1% default)
+def __ROS(t, y, p, dydt):
+    # Fraction of reactions resulting in ROS (1% defa__ult)
     ROSpercent = 0.01
     Km = 1
 
