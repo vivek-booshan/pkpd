@@ -72,6 +72,16 @@ def fat(t, y, p, n):
 
     return dydt
 
+def __fat(t, y, p, dydt):
+    glucose(t, y, p, dydt)
+    insulin(t, y, p, dydt)
+    fattyacids(t, y, p, dydt)
+    aminoacids(t, y, p, dydt)
+    g6p(t, y, p, dydt)
+    triglycerides(t, y, p, dydt)
+    pyruvate(t, y, p, dydt)
+    acetylcoa(t, y, p, dydt)
+    ROS(t, y, p, dydt)
 
 def glucose(t, y, p, dydt):
     dydt[Index.plasma_glucose] += (

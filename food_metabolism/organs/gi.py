@@ -54,6 +54,11 @@ def GI(t, y, p, n):
     fatty_acid_full_model(t, y, p, dydt)
     return dydt
 
+def __GI(t, y, p, dydt):
+    glucose_two_compartment(t, y, p, dydt)
+    fructose_two_compartment(t, y, p, dydt)
+    fatty_acid_full_model(t, y, p, dydt)
+
 def glucose_two_compartment(t, y, p, dydt):
     V_gut = p.V.gut
     V_blood = p.V.plasma  # Using plasma as "blood" pool

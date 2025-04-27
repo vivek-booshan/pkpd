@@ -45,6 +45,23 @@ def skeletalmuscle(t, y, p, n):
     
     return dydt
 
+def __muscle(t, y, p, dydt):
+    glucose(t,y,p, dydt)
+    insulin(t,y,p, dydt)
+    fattyacids(t,y,p, dydt)
+    aminoacids(t,y,p, dydt)
+    g6p(t,y,p, dydt)
+    glycogen(t,y,p, dydt)
+    pyruvate(t,y,p, dydt)
+    acetylcoa(t,y,p, dydt)
+    NAD(t,y,p, dydt)
+    NADH(t,y,p, dydt)
+    FAD(t,y,p, dydt)
+    FADH2(t,y,p, dydt)
+    ROS(t,y,p, dydt)
+    ATP(t,y,p, dydt)
+    lactate(t,y,p, dydt)
+
 def glucose(t, y, p, dydt):
     dydt[Index.plasma_glucose] += (
         (-p.M.k_G_from_plasma * y[Index.plasma_glucose] * p.V.plasma + p.M.k_G_to_plasma * y[Index.muscle_glucose] * p.V.muscle) / p.V.plasma
