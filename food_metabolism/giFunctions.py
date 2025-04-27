@@ -5,14 +5,15 @@ def giInit():
     p = Parameters(
         V=Volumes(
             plasma=5.0,
-            fat=11.0,
+            subq=11.0,
+            vsc=1.0,
             gut=1.25,
             liver=0.0,
             muscle=0.0,
             pancreas=0.0,
             brain=0.0
         ),
-        shared=SharedRates(
+        Shared=SharedRates(
             k_P_to_ACoA=1.0,               # pyruvate_to_acetylcoa
             k_ACoA_to_P=0.0,               # unused
             k_FA_to_ACoA=1 / 8,            # fattyacids_to_acetylcoa
@@ -23,20 +24,20 @@ def giInit():
             k_P_to_G6P=0.1,                # pyruvate_to_g6p
             k_G6P_to_P=1.0                 # g6p_to_pyruvate
         ),
-        CL=ClearanceRates(
-            kCL_insulin=0,
-            kCL_ATP=0.0,
-            kCL_G_GI=0.05,
-            kCL_F_GI=0.05,
-            kCL_FA_GI=0.1
-        ),
+        # CL=ClearanceRates(
+        #     kCL_insulin=0,
+        #     kCL_ATP=0.0,
+        #     kCL_G_GI=0.05,
+        #     kCL_F_GI=0.05,
+        #     kCL_FA_GI=0.1
+        # ),
         Subq=None,
         Vsc=None,
         M=None,
         GI=GIParameters(
-            kabs_G=0.1,
-            kabs_F=0.1,
-            kabs_FA=0.05,
+            kabs_glucose=0.1,
+            kabs_fructose=0.1,
+            kabs_fattyacid=0.05,
             k_diffusion_micelle_to_membrane=0.1,
             k_Vmax_trans=5.0,
             k_Vmax_reester=3.0,
@@ -44,6 +45,9 @@ def giInit():
             Km_trans=10.0,
             Km_reester=5.0,
             Km_export=4.0,
+            kCL_glucose=0.05,
+            kCL_fructose=0.05,
+            kCL_fattyacid=0.1
         )
         # Pancreas is not being used, so not included
     )
@@ -51,57 +55,44 @@ def giInit():
 
 def GI(t, y, p, n):
     dydt = np.zeros(n)
-    glucose(t, y, p, dydt)
-    fructose(t, y, p, dydt)
+    glucose_two_compartment(t, y, p, dydt)
+    fructose_two_compartment(t, y, p, dydt)
     fatty_acid_full_model(t, y, p, dydt)
-    
-def glucose(t, y, p, dydt):
-    V_gut = params.V.gut
-    V_blood = params.V.plasma  # Using plasma as "blood" pool
+    return dydt
 
-    kabs = params.GI.kabs_G
-    kclear = params.CL.kCL_G_GI
+def glucose_two_compartment(t, y, p, dydt):
+    V_gut = p.V.gut
+    V_blood = p.V.plasma  # Using plasma as "blood" pool
 
-    dydt[Index.gut_glucose] = -(kabs * y[Index.gut_glucose] * V_gut) / V_gut
-    dydt[Index.plasma_glucose] = ((kabs * y[Index.gut_glucose] * V_gut) - (kclear * y[Index.plasma_glucose]* V_blood)) / V_blood
+    kabs = p.GI.kabs_glucose
+    kclear = p.GI.kCL_glucose
+
+    dydt[Index.gut_glucose] += -(kabs * y[Index.gut_glucose] * V_gut) / V_gut
+    dydt[Index.plasma_glucose] += ((kabs * y[Index.gut_glucose] * V_gut) - (kclear * y[Index.plasma_glucose]* V_blood)) / V_blood
 
 def fructose_two_compartment(t, y, p, dydt):
-    V_gut = params.V.gut
-    V_blood = params.V.plasma
+    V_gut = p.V.gut
+    V_blood = p.V.plasma
 
-    kabs = params.GI.kabs_F
-    kclear = params.CL.kCL_F_GI
+    kabs = p.GI.kabs_fructose
+    kclear = p.GI.kCL_fructose
 
-    dydt[Index.gut_fructose] = -(kabs * y[Index.gut_fructose] * V_gut) / V_gut
-    dydt[Index.plasma_fructose] = ((kabs * y[Index.gut_fructose] * V_gut) - (kclear * y[Index.plasma_fructose] * V_blood)) / V_blood
-
-def fatty_acid_two_compartment(t, y, params):
-    FA_gut, FA_blood = y
-
-    V_gut = params.V.gut
-    V_blood = params.V.plasma
-
-    kabs = params.GI.kabs_FA
-    kclear = params.CL.kCL_FA_GI
-
-    dFA_gut_dt = -(kabs * FA_gut * V_gut) / V_gut
-    dFA_blood_dt = ((kabs * FA_gut * V_gut) - (kclear * FA_blood * V_blood)) / V_blood
-    return [dFA_gut_dt, dFA_blood_dt]
+    dydt[Index.gut_fructose] += -(kabs * y[Index.gut_fructose] * V_gut) / V_gut
+    dydt[Index.plasma_fructose] += ((kabs * y[Index.gut_fructose] * V_gut) - (kclear * y[Index.plasma_fructose] * V_blood)) / V_blood
 
 def fatty_acid_full_model(t, y, p, dydt):
-    GI = params.GI
-    CL = params.CL
-    V_blood = params.V.plasma
+    GI = p.GI
+    V_blood = p.V.plasma
 
     # Pull out parameters
     J_diff = GI.k_diffusion_micelle_to_membrane * (y[Index.micellar_fattyacid] - y[Index.membrane_fattyacid])
     J_trans = (GI.k_Vmax_trans * y[Index.membrane_fattyacid]) / (GI.Km_trans + y[Index.membrane_fattyacid] + 1e-6)
     J_reester = (GI.k_Vmax_reester * y[Index.cytosol_fattyacid]) / (GI.Km_reester + y[Index.cytosol_fattyacid] + 1e-6)
     J_export = (GI.k_Vmax_export * y[Index.cytosol_TAG]) / (GI.Km_export + y[Index.cytosol_TAG] + 1e-6)
-    J_clear = CL.kCL_FA_GI * y[Index.plasma_glucose]
+    J_clear = GI.kCL_fattyacid * y[Index.plasma_glucose]
 
-    dydt[Index.micellar_fattyacid] = -J_diff
-    dydt[Index.membrane_fattyacid] = J_diff - J_trans
-    dydt[Index.cytosol_fattyacid] = J_trans - J_reester
-    dydt[Index.cytosol_TAG] = J_reester - J_export
-    dydt[Index.plasma_fattyacid] = (J_export - J_clear)
+    dydt[Index.micellar_fattyacid] += -J_diff
+    dydt[Index.membrane_fattyacid] += J_diff - J_trans
+    dydt[Index.cytosol_fattyacid] += J_trans - J_reester
+    dydt[Index.cytosol_TAG] += J_reester - J_export
+    dydt[Index.plasma_fattyacid] += (J_export - J_clear)
