@@ -1,5 +1,6 @@
 import numpy as np
-from parameters import *
+from organs.parameters import *
+from organs.index import Index
 
 def giInit():
     p = Parameters(
@@ -24,13 +25,6 @@ def giInit():
             k_P_to_G6P=0.1,                # pyruvate_to_g6p
             k_G6P_to_P=1.0                 # g6p_to_pyruvate
         ),
-        # CL=ClearanceRates(
-        #     kCL_insulin=0,
-        #     kCL_ATP=0.0,
-        #     kCL_G_GI=0.05,
-        #     kCL_F_GI=0.05,
-        #     kCL_FA_GI=0.1
-        # ),
         Subq=None,
         Vsc=None,
         M=None,

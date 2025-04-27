@@ -1,19 +1,6 @@
-# 0 glucose plasma
-# 1 glucose fat
-# 2 insulin plasma
-# 3 insulin fat
-# 4 fattyacids plasma
-# 5 fattyacids fat
-# 6 aminoacids plasma
-# 7 aminoacids fat
-# 8 g6p fat
-# 9 triglycerides fat
-# 10 Pyruvate
-# 11 acetylcoa fat
-# 12 ROS fat
 import numpy as np
-from parameters import *
- 
+from organs.parameters import *
+from organs.index import Index
 
 def fat_init():
     p = Parameters(
