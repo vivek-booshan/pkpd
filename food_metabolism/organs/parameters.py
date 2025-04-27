@@ -195,6 +195,30 @@ class LiverParameters:
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class Parameters:
+    """
+    Data class representing the parameters used in the metabolic model.
+
+    This class groups together various parameters that control the dynamics of the system, 
+    including volumes of different compartments, rate constants for metabolic processes, 
+    and the specific parameters governing muscle, adipose tissue (fat), and gastrointestinal (GI) dynamics.
+
+    Attributes:
+        V (Volumes): A `Volumes` object containing the volumes of different biological compartments 
+                      (e.g., plasma, gut, liver, subq, muscle, etc.).
+        Shared (SharedRates): A `SharedRates` object containing rate constants that govern common 
+                              metabolic reactions across compartments (e.g., acetyl-CoA conversion rates).
+        M (MuscleParameters): A `MuscleParameters` object containing rate constants specific to 
+                               muscle metabolism (e.g., glucose, fatty acid, and amino acid transport).
+        Subq (FatParameters): A `FatParameters` object containing rate constants specific to 
+                              subcutaneous fat metabolism (e.g., fatty acid uptake and conversion rates).
+        Vsc (FatParameters): A `FatParameters` object containing rate constants specific to 
+                              visceral fat metabolism, similar to the subcutaneous fat parameters.
+        GI (GIParameters): A `GIParameters` object containing rate constants governing nutrient absorption 
+                            and transport in the gastrointestinal system (e.g., glucose, fructose, and fatty acid transport).
+
+    This class serves as the central container for all parameter values used in the metabolic model, 
+    enabling the easy passing and organization of these values to the model's functions and solvers.
+    """
     V      : Volumes
     Shared : SharedRates
     M      : MuscleParameters

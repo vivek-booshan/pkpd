@@ -57,8 +57,33 @@ def fat_init():
     return p
 
 
-def fat(t, y, p, n):
-    dydt = np.zeros(n)
+def fat(t, y, p):
+    """
+    The fat function computes the rate of change (dydt) for various metabolites 
+    and processes in the adipose tissue (fat) compartment of a metabolic model.
+
+    This function takes in the current state vector, `y`, representing concentrations or amounts 
+    of metabolites, and updates it with the rate of change (`dydt`) based on metabolic interactions 
+    governed by the parameters `p`.
+
+    Attributes:
+        t (float): The current time point (in the simulation's time units).
+        y (np.ndarray): The state vector representing the current concentrations or amounts of metabolites.
+        p (object): A parameters object containing rate constants and volume information.
+        n (int): The total number of state variables in the system.
+
+    Processes:
+        Computes the rates of change for various metabolic processes in adipose tissue.
+        Includes processes like glucose uptake, fatty acid metabolism, triglyceride formation, and ROS production.
+
+    Updates:
+        The function updates the `dydt` array to reflect the computed rate of change for each state variable.
+
+    Returns:
+        dydt (np.ndarray): The array of rate-of-change values for each state variable, which is used in 
+                            numerical integration methods (e.g., `solve_ivp`) to simulate the system.
+    """
+    dydt = np.zeros(len(Index))
 
     glucose(t, y, p, dydt)
     insulin(t, y, p, dydt)
@@ -152,8 +177,6 @@ def fattyacids(t, y, p, dydt):
 
 
 def aminoacids(t, y, p, dydt):
-    # dydt += np.zeros(n)
-
     dydt[Index.plasma_aminoacid] += (
         + (
             - p.Subq.k_AA_from_plasma * y[Index.plasma_aminoacid] * p.V.plasma
@@ -183,8 +206,6 @@ def aminoacids(t, y, p, dydt):
 
 
 def g6p(t, y, p, dydt):
-    # dydt += np.zeros(n)
-    
     dydt[Index.subq_G6P] += (
         + p.Shared.k_G_to_G6P * y[Index.subq_glucose]
         - p.Shared.k_G6P_to_G * y[Index.subq_G6P]
@@ -197,7 +218,6 @@ def g6p(t, y, p, dydt):
         - p.Shared.k_G6P_to_P * y[Index.vsc_G6P]
         + p.Shared.k_P_to_G6P * y[Index.vsc_pyruvate]**2
     )
-    # return dydt
 
 
 def triglycerides(t, y, p, dydt):
@@ -229,7 +249,6 @@ def pyruvate(t, y, p, dydt):
 
 
 def acetylcoa(t, y, p, dydt):
-
     dydt[Index.subq_ACoA] += (
         + p.Shared.k_P_to_ACoA * y[Index.subq_pyruvate]
         + 8 * p.Shared.k_FA_to_ACoA * y[Index.subq_fattyacid]

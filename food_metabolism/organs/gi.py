@@ -47,8 +47,25 @@ def giInit():
     )
     return p
 
-def GI(t, y, p, n):
-    dydt = np.zeros(n)
+def GI(t, y, p):
+    """
+    The GI function computes the rate of change (dydt) for various metabolites in the gastrointestinal 
+    (GI) compartment of a metabolic model, including glucose, fructose, and fatty acid metabolism.
+
+    This function takes in the current state vector, `y`, representing concentrations or amounts of 
+    metabolites, and updates it with the rate of change (`dydt`) based on metabolic interactions governed 
+    by the parameters `p`.
+
+    Attributes:
+        t (float): The current time point (in the simulation's time units).
+        y (np.ndarray): The state vector representing the current concentrations or amounts of metabolites in the GI tract.
+        p (object): A parameters object containing rate constants and volume information.
+
+    Returns:
+        dydt (np.ndarray): The array of rate-of-change values for each state variable, used in numerical 
+                            integration methods (e.g., `solve_ivp`) to simulate the system.
+    """
+    dydt = np.zeros(len(Index))
     glucose_two_compartment(t, y, p, dydt)
     fructose_two_compartment(t, y, p, dydt)
     fatty_acid_full_model(t, y, p, dydt)

@@ -2,30 +2,34 @@ import numpy as np
 from organs.parameters import *
 from organs.index import Index
 
-def skeletalmuscle(t, y, p, n):
+def skeletalmuscle(t, y, p):
     """
-    - 0 glucose plasma
-    - 1 glucose muscle
-    - 2 insulin plasma
-    - 3 insulin muscle
-    - 4 fattyacids plasma
-    - 5 fattyacids muscle
-    - 6 aminoacids plasma
-    - 7 aminoacids muscle
-    - 8 g6p muscle
-    - 9 glycogen muscle
-    - 10 Pyruvate
-    - 11 acetylcoa muscle
-    - 12 NAD 
-    - 13 NADH
-    - 14 FAD
-    - 15 FADH2
-    - 16 ROS
-    - 17 ATP
-    - 18 lactate in plasma
-    - 19 lactate in muscle
+    The skeletalmuscle function computes the rate of change (dydt) for various metabolites 
+    and processes in the skeletal muscle compartment of a metabolic model.
+
+    This function takes in the current state vector, `y`, representing concentrations or amounts 
+    of metabolites, and updates it with the rate of change (`dydt`) based on metabolic interactions 
+    governed by the parameters `p`.
+
+    Processes:
+        - Models glucose, fatty acid, and amino acid uptake, utilization, and storage in skeletal muscle.
+        - Simulates the conversion of glucose to glucose-6-phosphate (G6P) and the formation of glycogen.
+        - Models the glycolysis and oxidative phosphorylation pathways with the generation of ATP, NADH, FADH2, and ROS.
+        - Computes the production of pyruvate and its conversion to acetyl-CoA.
+        - Simulates the dynamic formation and utilization of lactate in the muscle.
+
+    Attributes:
+        t (float): The current time point (in the simulation's time units).
+        y (np.ndarray): The state vector representing the current concentrations or amounts of metabolites in skeletal muscle.
+        p (object): A parameters object containing rate constants and volume information.
+        n (int): The total number of state variables in the system (e.g., metabolites, molecules involved in muscle metabolism).
+
+
+    Returns:
+        dydt (np.ndarray): The array of rate-of-change values for each state variable, which is used in 
+                            numerical integration methods (e.g., `solve_ivp`) to simulate the system.
     """
-    dydt = np.zeros(n)
+    dydt = np.zeros(len(Index))
 
     glucose(t,y,p, dydt)
     insulin(t,y,p, dydt)
