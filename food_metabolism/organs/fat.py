@@ -1,6 +1,6 @@
 import numpy as np
-from organs.parameters import *
-from organs.index import Index
+from .parameters import *
+from .index import Index
 
 def fat_init():
     p = Parameters(
@@ -76,20 +76,25 @@ def fat(t: float, y: np.ndarray, p: Parameters) -> np.ndarray:
                             numerical integration methods (e.g., `solve_ivp`) to simulate the system.
     """
     dydt = np.zeros(len(Index))
-
-    glucose(t, y, p, dydt)
-    insulin(t, y, p, dydt)
-    fattyacids(t, y, p, dydt)
-    aminoacids(t, y, p, dydt)
-    g6p(t, y, p, dydt)
-    triglycerides(t, y, p, dydt)
-    pyruvate(t, y, p, dydt)
-    acetylcoa(t, y, p, dydt)
-    ROS(t, y, p, dydt)
-
+    __fat(t, y, p, dydt)
     return dydt
 
 def __fat(t, y, p, dydt):
+    """
+    The fat function computes the rate of change (dydt) for various metabolites 
+    and processes in the adipose tissue (fat) compartment of a metabolic model.
+
+    This function takes in the current state vector, `y`, representing concentrations or amounts 
+    of metabolites, and updates it with the rate of change (`dydt`) based on metabolic interactions 
+    governed by the parameters `p`.
+
+    Attributes:
+        t (float): The current time point (in the simulation's time units).
+        y (np.ndarray): The state vector representing the current concentrations or amounts of metabolites.
+        p (object): A parameters object containing rate constants and volume information.
+        dydt (np.ndarray): The array of rate-of-change values for each state variable, which is used in 
+                            numerical integration methods (e.g., `solve_ivp`) to simulate the system.
+    """
     glucose(t, y, p, dydt)
     insulin(t, y, p, dydt)
     fattyacids(t, y, p, dydt)

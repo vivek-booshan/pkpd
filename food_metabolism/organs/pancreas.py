@@ -2,14 +2,17 @@
 # https://www.researchgate.net/figure/Concentration-response-of-insulin-secretion-A-Average-insulin-secretion-rate_fig3_336211327
 # https://www.sciencedirect.com/science/article/pii/S0168822713004221
 
-from organs.index import Index 
+from .index import Index 
 
-def pancreas(t, y):
-    dydt = np.zeros(len(Index))
+def __pancreas(t, y, dydt):
     dinsulin, dglucagon, dsomat = pancreatic_secretion_response_to_Gblood(y[Index.plasma_glucose])
     dydt[Index.plasma_insulin] += dinsulin
     dydt[Index.plasma_glucagon] += dglucagon
     dydt[Index.plasma_somatostatin] += dsomat
+
+def pancreas(t, y):
+    dydt = np.zeros(len(Index))
+    __pancreas(t, y, dydt)
     return dydt
 
 def pancreatic_secretion_response_to_Gblood(Gblood):
@@ -29,13 +32,13 @@ def pancreatic_secretion_response_to_Gblood(Gblood):
     insulin_x3 = -170/3
 
     glucagon_m1 = (0.3 - 1) / (7.5 - 0)
-    glucagon_m2 = (0.55 - 0.3) / (20 - 7.5)
-    glucagon_m3 = (1.3 - 0.55) / (30 - 20)
+    # glucagon_m2 = (0.55 - 0.3) / (20 - 7.5)
+    # glucagon_m3 = (1.3 - 0.55) / (30 - 20)
     __glucagon_m2 = (0 - 0.3) / (30 - 7.5)
     glucagon_x1 = 75/7
-    glucagon_x2 = -7.5
+    # glucagon_x2 = -7.5
     __glucagon_x2 = 30
-    glucagon_x3 = 38/3
+    # glucagon_x3 = 38/3
 
     somatostatin_m1 =  1 / 30
     # Gblood is mmol

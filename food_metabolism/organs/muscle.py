@@ -1,6 +1,6 @@
 import numpy as np
-from organs.parameters import *
-from organs.index import Index
+from .parameters import *
+from .index import Index
 
 def skeletalmuscle(t: float, y: np.ndarray, p: Parameters) -> np.ndarray:
     """
@@ -30,26 +30,33 @@ def skeletalmuscle(t: float, y: np.ndarray, p: Parameters) -> np.ndarray:
                             numerical integration methods (e.g., `solve_ivp`) to simulate the system.
     """
     dydt = np.zeros(len(Index))
-
-    glucose(t,y,p, dydt)
-    insulin(t,y,p, dydt)
-    fattyacids(t,y,p, dydt)
-    aminoacids(t,y,p, dydt)
-    g6p(t,y,p, dydt)
-    glycogen(t,y,p, dydt)
-    pyruvate(t,y,p, dydt)
-    acetylcoa(t,y,p, dydt)
-    NAD(t,y,p, dydt)
-    NADH(t,y,p, dydt)
-    FAD(t,y,p, dydt)
-    FADH2(t,y,p, dydt)
-    ROS(t,y,p, dydt)
-    ATP(t,y,p, dydt)
-    lactate(t,y,p, dydt)
-    
+    __muscle(t, y, p, dydt)   
     return dydt
 
 def __muscle(t, y, p, dydt):
+    """
+    The skeletalmuscle function computes the rate of change (dydt) for various metabolites 
+    and processes in the skeletal muscle compartment of a metabolic model.
+
+    This function takes in the current state vector, `y`, representing concentrations or amounts 
+    of metabolites, and updates it with the rate of change (`dydt`) based on metabolic interactions 
+    governed by the parameters `p`.
+
+    Processes:
+        - Models glucose, fatty acid, and amino acid uptake, utilization, and storage in skeletal muscle.
+        - Simulates the conversion of glucose to glucose-6-phosphate (G6P) and the formation of glycogen.
+        - Models the glycolysis and oxidative phosphorylation pathways with the generation of ATP, NADH, FADH2, and ROS.
+        - Computes the production of pyruvate and its conversion to acetyl-CoA.
+        - Simulates the dynamic formation and utilization of lactate in the muscle.
+
+    Attributes:
+        t (float): The current time point (in the simulation's time units).
+        y (np.ndarray): The state vector representing the current concentrations or amounts of metabolites in skeletal muscle.
+        p (object): A parameters object containing rate constants and volume information.
+        n (int): The total number of state variables in the system (e.g., metabolites, molecules involved in muscle metabolism).
+        dydt (np.ndarray): The array of rate-of-change values for each state variable, which is used in 
+                            numerical integration methods (e.g., `solve_ivp`) to simulate the system.
+    """
     glucose(t,y,p, dydt)
     insulin(t,y,p, dydt)
     fattyacids(t,y,p, dydt)
