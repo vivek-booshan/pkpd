@@ -1,6 +1,27 @@
 from enum import IntEnum, auto
 
 class Index(IntEnum):
+    """
+    Index enumeration for the system's state vector.
+
+    Each attribute represents the index of a specific biological quantity 
+    (plasma concentrations, intracellular metabolites, gut contents, etc.)
+    within the full state vector used in ODE system simulations.
+
+    Naming convention:
+        - plasma_*: variables in blood plasma
+        - subq_*: variables in subcutaneous adipose tissue
+        - vsc_*: variables in visceral adipose tissue
+        - muscle_*: variables in skeletal muscle
+        - gut_*: nutrients in the gut
+        - micellar_*, membrane_*, cytosol_*: stages of fatty acid absorption and storage in gut
+
+    Auto-incremented indices ensure that each variable is assigned a unique position 
+    in the vector.
+
+    Used primarily for mapping between biological compartments and their corresponding 
+    positions in the simulation state array.
+    """
     plasma_glucose=0
     plasma_fructose=auto()
     plasma_insulin=auto()
