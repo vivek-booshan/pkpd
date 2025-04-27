@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import IntEnum, auto
 
 class Index(IntEnum):
-    plasma_glucose=auto()
+    plasma_glucose=0
     plasma_fructose=auto()
     plasma_insulin=auto()
     plasma_fattyacid=auto()
@@ -141,13 +141,14 @@ class SharedRates:
     k_P_to_G6P  : float
     k_G6P_to_P  : float
 
-@dataclass(frozen=True, slots=True)
-class ClearanceRates:
-    kCL_insulin: float
-    kCL_ATP    : float
-    kCL_G      : float
-    kCL_F      : float
-    kCL_FA     : float
+# @dataclass(frozen=True, slots=True)
+# class ClearanceRates:
+#     kCL_insulin: float
+#     kCL_ATP    : float
+#     kCL_G_GI    : float
+#     kCL_F_GI    : float
+#     kCL_FA_GI    : float
+#     kCL_FA_muscle    : float
 
 @dataclass(frozen=True, slots=True)
 class MuscleParameters:
@@ -167,6 +168,9 @@ class MuscleParameters:
     k_G6P_to_Glc         : float
     k_P_to_L             : float
     k_L_to_P             : float
+    kCL_insulin          : float
+    kCL_ATP              : float
+    kCL_FA               : float
 
 @dataclass(frozen=True, slots=True)
 class FatParameters:
@@ -180,12 +184,13 @@ class FatParameters:
     k_AA_to_plasma        : float
     k_FA_to_TAG           : float
     k_TAG_to_FA           : float
+    kCL_insulin           : float
 
 @dataclass(frozen=True, slots=True)
 class GIParameters:
-    kabs_G                         : float
-    kabs_F                         : float
-    kabs_FA                        : float
+    kabs_glucose                   : float
+    kabs_fructose                  : float
+    kabs_fattyacid                 : float
     k_diffusion_micelle_to_membrane: float
     k_Vmax_trans                   : float
     k_Vmax_reester                 : float
@@ -193,6 +198,9 @@ class GIParameters:
     Km_trans                       : float
     Km_reester                     : float
     Km_export                      : float
+    kCL_glucose                    : float
+    kCL_fructose                   : float
+    kCL_fattyacid                  : float
 
 @dataclass(frozen=True, slots=True)
 class PancreasParameters:
@@ -201,8 +209,7 @@ class PancreasParameters:
 @dataclass(frozen=True, slots=True, kw_only=True)
 class Parameters:
     V      : Volumes
-    shared : SharedRates
-    CL     : ClearanceRates
+    Shared : SharedRates
     M      : MuscleParameters
     Subq   : FatParameters
     Vsc    : FatParameters
