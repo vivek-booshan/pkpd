@@ -13,6 +13,49 @@
 # 12 ROS fat
 import numpy as np
 from parameters import *
+"""
+
+plasma shtuff
+- 0 glucose plasma
+- 1 insulin plasma
+- 2 fattyacids plasma
+- 3 aminoacids plasma
+- 4 lactate plasma
+- 5 ghrelin plasma
+- 6 glp1 plasma
+- 7 leptin plasma
+- 8 pyy plasma
+
+muscle shtuff
+- 9 glucose muscle
+- 10 insulin muscle
+- 11 fattyacids muscle
+- 12 aminoacids muscle
+- 13 g6p muscle
+- 14 glycogen muscle
+- 15
+
+    - 0 glucose plasma
+    - 1 glucose muscle
+    - 2 insulin plasma
+    - 3 insulin muscle
+    - 4 fattyacids plasma
+    - 5 fattyacids muscle
+    - 6 aminoacids plasma
+    - 7 aminoacids muscle
+    - 8 g6p muscle
+    - 9 glycogen muscle
+    - 10 Pyruvate
+    - 11 acetylcoa muscle
+    - 12 NAD 
+    - 13 NADH
+    - 14 FAD
+    - 15 FADH2
+    - 16 ROS
+    - 17 ATP
+    - 18 lactate in plasma
+    - 19 lactate in muscle
+    """
 
 def fat_init():
     p = Parameters(
