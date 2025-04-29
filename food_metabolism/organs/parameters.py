@@ -110,6 +110,7 @@ class MuscleParameters:
     kCL_insulin          : float
     kCL_ATP              : float
     kCL_FA               : float
+    k_ACoA_to_TCA        : float
 
 @dataclass(frozen=True, slots=True)
 class FatParameters:
