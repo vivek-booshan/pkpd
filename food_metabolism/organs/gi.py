@@ -1,3 +1,4 @@
+# TODO : need to include vldl incorporation?
 import numpy as np
 from .parameters import *
 from .index import Index
