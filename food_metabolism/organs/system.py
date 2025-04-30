@@ -26,17 +26,17 @@ def init() -> Parameters:
             pancreas=0.0,
             brain=0.0
         ),
-        Shared=SharedRates(
-            k_P_to_ACoA=1.0,               # pyruvate_to_acetylcoa
-            k_ACoA_to_P=0.0,               # unused
-            k_FA_to_ACoA=1 / 8,            # fattyacids_to_acetylcoa
-            k_AA_to_ACoA=1 / 4,            # aminoacids_to_acetylcoa
-            k_ACoA_to_FA=1.0,              # acetylcoa_to_fattyacids
-            k_G_to_G6P=1.0,                # glucose_to_g6p
-            k_G6P_to_G=0.1,                # g6p_to_glucose
-            k_P_to_G6P=0.1,                # pyruvate_to_g6p
-            k_G6P_to_P=1.0                 # g6p_to_pyruvate
-        ),
+        # Shared=SharedRates(
+        #     k_P_to_ACoA=1.0,               # pyruvate_to_acetylcoa
+        #     k_ACoA_to_P=0.0,               # unused
+        #     k_FA_to_ACoA=1 / 8,            # fattyacids_to_acetylcoa
+        #     k_AA_to_ACoA=1 / 4,            # aminoacids_to_acetylcoa
+        #     k_ACoA_to_FA=1.0,              # acetylcoa_to_fattyacids
+        #     k_G_to_G6P=1.0,                # glucose_to_g6p
+        #     k_G6P_to_G=0.1,                # g6p_to_glucose
+        #     k_P_to_G6P=0.1,                # pyruvate_to_g6p
+        #     k_G6P_to_P=1.0                 # g6p_to_pyruvate
+        # ),
         M=MuscleParameters(
             k_insulin_from_plasma=5,
             k_insulin_to_plasma=0.5,
@@ -58,6 +58,15 @@ def init() -> Parameters:
             kCL_insulin=1,
             kCL_ATP=1,
             kCL_FA=1,
+            k_P_to_ACoA=1.0,               # pyruvate_to_acetylcoa
+            k_ACoA_to_P=0.0,               # unused
+            k_FA_to_ACoA=1 / 8,            # fattyacids_to_acetylcoa
+            k_AA_to_ACoA=1 / 4,            # aminoacids_to_acetylcoa
+            k_ACoA_to_FA=1.0,              # acetylcoa_to_fattyacids
+            k_G_to_G6P=1.0,                # glucose_to_g6p
+            k_G6P_to_G=0.1,                # g6p_to_glucose
+            k_P_to_G6P=0.1,                # pyruvate_to_g6p
+            k_G6P_to_P=1.0                 # g6p_to_pyruvate
         ),
         Subq=FatParameters(
             k_insulin_from_plasma=1.0,
@@ -70,7 +79,16 @@ def init() -> Parameters:
             k_AA_to_plasma=0.1,
             k_FA_to_TAG=1.0,               # fattyacids_to_triglycerides
             k_TAG_to_FA=0.1,                # triglycerides_to_fattyacids
-            kCL_insulin=1.0
+            kCL_insulin=1.0,
+            k_P_to_ACoA=1.0,               # pyruvate_to_acetylcoa
+            k_ACoA_to_P=0.0,               # unused
+            k_FA_to_ACoA=1 / 8,            # fattyacids_to_acetylcoa
+            k_AA_to_ACoA=1 / 4,            # aminoacids_to_acetylcoa
+            k_ACoA_to_FA=1.0,              # acetylcoa_to_fattyacids
+            k_G_to_G6P=1.0,                # glucose_to_g6p
+            k_G6P_to_G=0.1,                # g6p_to_glucose
+            k_P_to_G6P=0.1,                # pyruvate_to_g6p
+            k_G6P_to_P=1.0                 # g6p_to_pyruvate
         ),
         Vsc=FatParameters(
             k_insulin_from_plasma=2.0,
@@ -83,7 +101,16 @@ def init() -> Parameters:
             k_AA_to_plasma=0.1,
             k_FA_to_TAG=1.0,               # fattyacids_to_triglycerides
             k_TAG_to_FA=0.0005,             # triglycerides_to_fattyacids
-            kCL_insulin=1.0
+            kCL_insulin=1.0,
+            k_P_to_ACoA=1.0,               # pyruvate_to_acetylcoa
+            k_ACoA_to_P=0.0,               # unused
+            k_FA_to_ACoA=1 / 8,            # fattyacids_to_acetylcoa
+            k_AA_to_ACoA=1 / 4,            # aminoacids_to_acetylcoa
+            k_ACoA_to_FA=1.0,              # acetylcoa_to_fattyacids
+            k_G_to_G6P=1.0,                # glucose_to_g6p
+            k_G6P_to_G=0.1,                # g6p_to_glucose
+            k_P_to_G6P=0.1,                # pyruvate_to_g6p
+            k_G6P_to_P=1.0                 # g6p_to_pyruvate
         ),
         GI=GIParameters(
             kabs_glucose=0.1,
