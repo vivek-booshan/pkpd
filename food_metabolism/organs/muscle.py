@@ -1,3 +1,5 @@
+# TODO (Vivek) : Refactor this file in terms of physiological functions instead of components
+# ie using __glycogen_synthesis instead of __glucose and __glycogen
 import numpy as np
 from .parameters import *
 from .index import Index
