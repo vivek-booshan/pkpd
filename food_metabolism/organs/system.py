@@ -45,6 +45,7 @@ def init() -> Parameters:
             k_G_from_plasma=1,
             k_G_to_plasma=0.1,
             k_AA_from_plasma=1,
+            k_ACoA_to_TCA=5,
             k_AA_to_plasma=0.1,
             k_L_from_plasma=0.1,         # lactate_plasma_skeletalmuscle
             k_L_to_plasma=1,             # lactate_skeletalmuscle_plasma
@@ -178,6 +179,7 @@ def muscle_init():
             k_G_to_plasma=0.1,
             k_AA_from_plasma=1,
             k_AA_to_plasma=0.1,
+            k_ACoA_to_TCA=5,
             k_L_from_plasma=0.1,         # lactate_plasma_skeletalmuscle
             k_L_to_plasma=1,             # lactate_skeletalmuscle_plasma
             NADH_ETC=1,
