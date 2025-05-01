@@ -61,7 +61,7 @@ def __glucose(t, y, p, dydt):
     )
     dydt[Index.vsc_glucose] += (
         + (p.Vsc.k_G_from_plasma * y[Index.plasma_glucose] * p.V.plasma - p.Vsc.k_G_to_plasma * y[Index.vsc_glucose] * p.V.vsc) / p.V.vsc
-        - p.Subq.k_G_to_G6P * y[Index.vsc_glucose] + p.Subq.k_G6P_to_G * y[Index.vsc_G6P]
+        - p.Vsc.k_G_to_G6P * y[Index.vsc_glucose] + p.Vsc.k_G6P_to_G * y[Index.vsc_G6P]
     )
 
 
