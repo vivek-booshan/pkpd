@@ -78,6 +78,7 @@ class Index(IntEnum):
     liver_fructose=auto()
     liver_fattyacid=auto()
     liver_aminoacid=auto()
+    liver_TAG = auto()
     liver_pyruvate=auto()
     liver_G6P=auto()
     liver_ROS=auto()

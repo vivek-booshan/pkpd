@@ -69,7 +69,7 @@ def init() -> Parameters:
             k_AA_from_plasma=1.0,
             k_AA_to_plasma=0.1,
             k_FA_to_TAG=1.0,               # fattyacids_to_triglycerides
-            k_TAG_to_FA=0.01,              # triglycerides_to_fattyacids
+            k_TAG_to_FA=0.001,              # triglycerides_to_fattyacids
             kCL_insulin=1.0,
             k_P_to_ACoA=1.0,               # pyruvate_to_acetylcoa
             k_ACoA_to_P=0.0,               # unused
@@ -91,7 +91,7 @@ def init() -> Parameters:
             k_AA_from_plasma=2.0,
             k_AA_to_plasma=0.1,
             k_FA_to_TAG=1.0,               # fattyacids_to_triglycerides
-            k_TAG_to_FA=0.01,             # triglycerides_to_fattyacids
+            k_TAG_to_FA=0.0001,             # triglycerides_to_fattyacids
             kCL_insulin=1.0,
             k_P_to_ACoA=1.0,               # pyruvate_to_acetylcoa
             k_ACoA_to_P=0.0,               # unused
@@ -119,29 +119,30 @@ def init() -> Parameters:
             kCL_fattyacid=0.1
         ),
         Liver=LiverParameters(
-            k_G_from_plasma=1,
-            k_G_to_plasma=0.1,
-            k_F_from_plasma=1,
+            k_G_from_plasma=5,
+            k_G_to_plasma=5,
+            k_F_from_plasma=10,
             k_F_to_plasma=0.1,
-            k_FA_from_plasma=1,
-            k_FA_to_plasma=0.1,
-            k_AA_from_plasma=1,
-            k_AA_to_plasma=0.1,
+            k_FA_from_plasma=0.1,
+            k_FA_to_plasma=1,
+            k_AA_from_plasma=5,
+            k_AA_to_plasma=5,
 
-            k_FA_to_TAG=1.0,               # fattyacids_to_triglycerides
-            k_TAG_to_FA=0.01,              # triglycerides_to_fattyacids
+            k_FA_to_TAG=1.5,               # fattyacids_to_triglycerides
+            k_TAG_to_FA=0.05,              # triglycerides_to_fattyacids
             kCL_insulin=1.0,
             kCL_glucagon=1,
             kCL_somatostatin=1,
-            k_P_to_ACoA=1.0,               # pyruvate_to_acetylcoa
-            k_ACoA_to_P=0.0,               # unused
+            k_P_to_ACoA=2.0,               # pyruvate_to_acetylcoa
+            k_ACoA_to_P=0.1,               # unused
             k_FA_to_ACoA=1 / 8,            # fattyacids_to_acetylcoa
             k_AA_to_ACoA=1 / 4,            # aminoacids_to_acetylcoa
             k_ACoA_to_FA=1.0,              # acetylcoa_to_fattyacids
-            k_G_to_G6P=1.0,                # glucose_to_g6p
-            k_G6P_to_G=0.1,                # g6p_to_glucose
-            k_P_to_G6P=0.1,                # pyruvate_to_g6p
-            k_G6P_to_P=1.0,                # g6p_to_pyruvate
+            k_G_to_G6P=0.001,                # glucose_to_g6p
+            k_G6P_to_G=1,                # g6p_to_glucose
+            k_P_to_G6P=0.01,                # pyruvate_to_g6p
+            k_G6P_to_P=0.1,        
+            k_F_to_P = 10        # g6p_to_pyruvate
 
            
 

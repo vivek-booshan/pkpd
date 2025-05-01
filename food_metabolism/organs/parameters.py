@@ -233,10 +233,8 @@ class LiverParameters:
     k_G6P_to_G            : float
     k_P_to_G6P            : float
     k_G6P_to_P            : float
-    k_pyruvate_to_mitochondria: float
-    k_mitochondrial_pyruvate_to_ACoA: float
-    k_ACoA_to_TCA: float
-
+    k_F_to_P              : float
+    
 @dataclass(frozen=True, slots=True, kw_only=True)
 class Parameters:
     """
