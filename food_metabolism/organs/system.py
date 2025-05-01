@@ -12,6 +12,7 @@ def system(t: float, y: np.ndarray, p: Parameters) -> np.ndarray:
     __GI(t, y, p, dydt)
     __muscle(t, y, p, dydt)
     __pancreas(t, y, dydt)
+    __liver(t, y, p, dydt)
     return dydt
 
 def init() -> Parameters:
@@ -115,7 +116,8 @@ def init() -> Parameters:
             kCL_glucose=0.05,
             kCL_fructose=0.05,
             kCL_fattyacid=0.1
-        )
+        ),
+        Liver=None,
     )
     return p
 
@@ -149,6 +151,7 @@ def giInit() -> Parameters:
         M=None,
         Subq=None,
         Vsc=None,
+        Liver=None,
     )
     return p
 
@@ -197,6 +200,7 @@ def muscle_init() -> Parameters:
         ),
         Subq=None,
         Vsc=None,
+        Liver=None,
         GI=None,
     )
     return p
@@ -237,6 +241,7 @@ def subq_init() -> Parameters:
         ),
         M=None,
         Vsc=None,
+        Liver=None,
         GI=None,
     )
     return p
@@ -276,6 +281,7 @@ def vsc_init() -> Parameters:
             k_G6P_to_P=1.0                 # g6p_to_pyruvate
         ),
         Subq=None,
+        Liver=None,
         M=None,
         GI=None,
     )

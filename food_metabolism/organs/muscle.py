@@ -95,10 +95,16 @@ def __insulin(t, y, p, dydt):
 
 def __fattyacids(t, y, p, dydt):
     dydt[Index.plasma_fattyacid] += (
-        (-p.M.k_FA_from_plasma * y[Index.plasma_fattyacid] * p.V.plasma + p.M.k_FA_to_plasma * y[Index.muscle_fattyacid] * p.V.muscle) / p.V.plasma
+        (
+            -p.M.k_FA_from_plasma * y[Index.plasma_fattyacid] * p.V.plasma
+            + p.M.k_FA_to_plasma * y[Index.muscle_fattyacid] * p.V.muscle
+        ) / p.V.plasma
     )
     dydt[Index.muscle_fattyacid] += (
-        (p.M.k_FA_from_plasma * y[Index.plasma_fattyacid] * p.V.plasma - p.M.k_FA_to_plasma * y[Index.muscle_fattyacid] * p.V.muscle) / p.V.muscle
+        + (
+            + p.M.k_FA_from_plasma * y[Index.plasma_fattyacid] * p.V.plasma
+            - p.M.k_FA_to_plasma * y[Index.muscle_fattyacid] * p.V.muscle
+        ) / p.V.muscle
         - p.M.k_FA_to_ACoA * y[Index.muscle_fattyacid] * y[Index.muscle_ATP]
     )
 
@@ -144,7 +150,7 @@ def __pyruvate(t, y, p, dydt):
 
 def __acetylcoa(t, y, p, dydt):
     dydt[Index.muscle_ACoA] += (
-        p.M.k_P_to_ACoA * y[Index.muscle_pyruvate] * y[Index.muscle_NAD]
+        + p.M.k_P_to_ACoA * y[Index.muscle_pyruvate] * y[Index.muscle_NAD]
         + 8 * p.M.k_FA_to_ACoA * y[Index.muscle_fattyacid] * y[Index.muscle_ATP]
         + p.M.k_AA_to_ACoA * y[Index.muscle_aminoacid]
         - p.M.k_ACoA_to_P * y[Index.muscle_ACoA] * y[Index.muscle_NAD]**3 * y[Index.muscle_FAD]
@@ -153,7 +159,7 @@ def __acetylcoa(t, y, p, dydt):
 
 def __NAD(t, y, p, dydt):
     dydt[Index.muscle_NAD] += (
-        -2 * p.M.k_G6P_to_P * y[Index.muscle_G6P] * y[Index.muscle_NAD]**2
+        - 2 * p.M.k_G6P_to_P * y[Index.muscle_G6P] * y[Index.muscle_NAD]**2
         + 2 * p.M.k_P_to_G6P * y[Index.muscle_pyruvate]**2 * y[Index.muscle_ATP]**3 * y[Index.muscle_NADH]**2
         - p.M.k_P_to_ACoA * y[Index.muscle_pyruvate] * y[Index.muscle_NAD]
         - 3 * p.M.k_ACoA_to_P * y[Index.muscle_ACoA] * y[Index.muscle_NAD]**3 * y[Index.muscle_FAD]
@@ -204,7 +210,7 @@ def __ROS(t, y, p, dydt):
 
 def __ATP(t, y, p, dydt):
     dydt[Index.muscle_ATP] += (
-        -p.M.k_G_to_G6P * y[Index.plasma_insulin] * y[Index.muscle_ATP]
+        - p.M.k_G_to_G6P * y[Index.plasma_insulin] * y[Index.muscle_ATP]
         + p.M.k_G6P_to_G * y[Index.muscle_G6P]
         + 3 * p.M.k_G6P_to_P * y[Index.muscle_G6P] * y[Index.muscle_NAD]**2
         - 3 * p.M.k_P_to_G6P * y[Index.muscle_pyruvate]**2 * y[Index.muscle_ATP]**3 * y[Index.muscle_NADH]**2

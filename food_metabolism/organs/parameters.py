@@ -210,11 +210,27 @@ class GIParameters:
     kCL_fattyacid                  : float
 
 @dataclass(frozen=True, slots=True)
-class PancreasParameters:
-    pass
-
-@dataclass(frozen=True, slots=True)
 class LiverParameters:
+    k_FA_from_plasma      : float
+    k_FA_to_plasma        : float
+    k_G_from_plasma       : float
+    k_G_to_plasma         : float
+    k_F_from_plasma       : float
+    k_F_to_plasma         : float
+    k_AA_from_plasma      : float
+    k_AA_to_plasma        : float
+    k_FA_to_TAG           : float
+    k_TAG_to_FA           : float
+
+    k_P_to_ACoA : float
+    k_ACoA_to_P : float
+    k_FA_to_ACoA: float
+    k_ACoA_to_FA: float
+    k_AA_to_ACoA: float
+    k_G_to_G6P  : float
+    k_G6P_to_G  : float
+    k_P_to_G6P  : float
+    k_G6P_to_P  : float
     pass
 
 @dataclass(frozen=True, slots=True, kw_only=True)
@@ -248,6 +264,7 @@ class Parameters:
     M      : MuscleParameters
     Subq   : FatParameters
     Vsc    : FatParameters
+    Liver  : LiverParameters
     GI     : GIParameters
 
 if __name__ == "__main__":

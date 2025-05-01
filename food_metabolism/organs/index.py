@@ -74,6 +74,19 @@ class Index(IntEnum):
     cytosol_fattyacid=auto()
     cytosol_TAG=auto()
 
+    liver_glucose=auto()
+    liver_fructose=auto()
+    liver_fattyacid=auto()
+    liver_aminoacid=auto()
+    liver_extracellular_pyruvate=auto()
+    liver_mitochondrial_pyruvate=auto()
+    liver_mitochondrial_ACoA=auto()
+    liver_G6P=auto()
+    liver_NAD=auto()
+    liver_NADH=auto()
+    liver_ATP=auto()
+    liver_ROS=auto()
+
 def get_plasma_indices():
     return (
         Index.plasma_glucose,
