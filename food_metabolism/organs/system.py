@@ -78,7 +78,7 @@ def init() -> Parameters:
             k_AA_from_plasma=1.0,
             k_AA_to_plasma=0.1,
             k_FA_to_TAG=1.0,               # fattyacids_to_triglycerides
-            k_TAG_to_FA=0.01,              # triglycerides_to_fattyacids
+            k_TAG_to_FA=0.01,                # triglycerides_to_fattyacids
             kCL_insulin=1.0,
             k_P_to_ACoA=1.0,               # pyruvate_to_acetylcoa
             k_ACoA_to_P=0.0,               # unused
@@ -88,7 +88,7 @@ def init() -> Parameters:
             k_G_to_G6P=1.0,                # glucose_to_g6p
             k_G6P_to_G=0.1,                # g6p_to_glucose
             k_P_to_G6P=0.1,                # pyruvate_to_g6p
-            k_G6P_to_P=1.0,                # g6p_to_pyruvate
+            k_G6P_to_P=1.0                 # g6p_to_pyruvate
         ),
         Vsc=FatParameters(
             k_insulin_from_plasma=2.0,
@@ -217,7 +217,7 @@ def muscle_init():
             k_L_to_P=0.1,                # lactate_to_pyruvate
             kCL_insulin=1,
             kCL_ATP=1,
-            kCL_FA=1,
+            kCL_FA=0,
         ),
         Subq=None,
         Vsc=None,
