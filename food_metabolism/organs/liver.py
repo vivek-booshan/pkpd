@@ -29,9 +29,9 @@ def __liver(t: float, y: np.ndarray, p: Parameters, dydt: np.ndarray):
     # __aminoacid_uptake(t, y, p, dydt)
     # __aminoacid_export(t, y, p, dydt)
 
-    __insulin(t, y, p, dydt)
-    __glucagon(t, y, p, dydt)    
-    __somatostatin(t, y, p, dydt)
+    __insulin_breakdown(t, y, p, dydt)
+    __glucagon_breakdown(t, y, p, dydt)    
+    __somatostatin_breakdown(t, y, p, dydt)
 
     __transport_pyruvate_to_mitochondria(t, y, p, dydt)
     __mitochondrial_pyruvate_to_ACoA(t, y, p, dydt)
@@ -54,14 +54,16 @@ def __glucose_export(t, y, p, dydt):
     return
 
 def __glucose_to_g6p(t, y, p, dydt):
-    dydt[Index.liver_glucose] += - p.Liver.k_G_to_G6P * y[Index.liver_glucose] + p.Liver.k_G6P_to_G * y[Index.liver_G6P]
     dydt[Index.liver_G6P] += p.Liver.k_G_to_G6P * y[Index.liver_glucose] + p.Liver.k_G6P_to_G * y[Index.liver_G6P]
+
+    dydt[Index.liver_glucose] += - p.Liver.k_G_to_G6P * y[Index.liver_glucose] + p.Liver.k_G6P_to_G * y[Index.liver_G6P]
     dydt[Index.liver_ATP] += - p.Liver.k_G_to_G6P * y[Index.plasma_insulin] * y[Index.liver_ATP]
     return
 
 def __g6p_to_glucose(t, y, p, dydt):
-    dydt[Index.liver_glucose] += + p.Liver.k_G6P_to_G * y[Index.liver_G6P]
     dydt[Index.liver_G6P] += - p.Liver.k_G6P_to_G * y[Index.liver_G6P]
+
+    dydt[Index.liver_glucose] += + p.Liver.k_G6P_to_G * y[Index.liver_G6P]
     dydt[Index.liver_ATP] += + p.Liver.k_G6P_to_G * y[Index.liver_G6P]
     return
 
@@ -69,7 +71,9 @@ def __g6p_to_glucose(t, y, p, dydt):
 def __fructose_to_pyruvate(t, y, p, dydt):
     dydt[Index.liver_fructose] += - p.Liver.k_F_to_P * y[Index.liver_fructose] * y[Index.liver_NAD]**2
     dydt[Index.liver_NAD] += - 2 * p.Liver.k_F_to_P * y[Index.liver_G6P] * y[Index.liver_NAD]**2
-    dydt[Index.liver_NADH] += 2 * p.Liver.k_F_to_P * y[Index.liver_G6P] * y[Index.liver_NAD]**2
+
+    dydt[Index.liver_extracellular_pyruvate] += + 2 * p.Liver.k_F_to_P * y[Index.liver_G6P] * y[Index.liver_NAD]**2
+    dydt[Index.liver_NADH] += + 2 * p.Liver.k_F_to_P * y[Index.liver_G6P] * y[Index.liver_NAD]**2
     dydt[Index.liver_ATP] += + 3 * p.Liver.k_F_to_P * y[Index.liver_G6P] * y[Index.liver_NAD]**2
     return
 
@@ -78,10 +82,11 @@ def __pyruvate_to_fructose(t, y, p, dydt):
     return
 
 def __pyruvate_to_g6p(t, y, p, dydt):
-    dydt[Index.liver_G6P] += + p.Liver.k_P_to_G6P * y[Index.liver_pyruvate]**2 * y[Index.liver_ATP]**3 * y[Index.liver_NADH]**2
-    dydt[Index.liver_pyruvate] += - 2 * p.Liver.k_P_to_G6P  * y[Index.liver_pyruvate]**2 * y[Index.liver_ATP]**3 * y[Index.liver_NADH]**2
-    dydt[Index.liver_NAD] += + 2 * p.Liver.k_P_to_G6P * y[Index.liver_pyruvate]**2 * y[Index.liver_ATP]**3 * y[Index.liver_NADH]**2
-    dydt[Index.liver_NADH] += - 2 * p.Liver.k_P_to_G6P * y[Index.liver_pyruvate]**2 * y[Index.liver_ATP]**3 * y[Index.liver_NADH]**2
+    dydt[Index.liver_G6P] += + p.Liver.k_P_to_G6P * y[Index.liver_extracellular_pyruvate]**2 * y[Index.liver_ATP]**3 * y[Index.liver_NADH]**2
+    dydt[Index.liver_NAD] += + 2 * p.Liver.k_P_to_G6P * y[Index.liver_extracellular_pyruvate]**2 * y[Index.liver_ATP]**3 * y[Index.liver_NADH]**2
+
+    dydt[Index.liver_extracellular_pyruvate] += - 2 * p.Liver.k_P_to_G6P  * y[Index.liver_extracellular_pyruvate]**2 * y[Index.liver_ATP]**3 * y[Index.liver_NADH]**2
+    dydt[Index.liver_NADH] += - 2 * p.Liver.k_P_to_G6P * y[Index.liver_extracellular_pyruvate]**2 * y[Index.liver_ATP]**3 * y[Index.liver_NADH]**2
     dydt[Index.liver_ATP] += - 3 * p.Liver.k_P_to_G6P * y[Index.muscle_pyruvate]**2 * y[Index.muscle_ATP]**3 * y[Index.muscle_NADH]**2
     return
 
@@ -170,7 +175,7 @@ def __lactate_uptake(t, y, p, dydt):
 
 def __lactate_to_pyruvate(t, y, p, dydt):
     dydt[Index.liver_lactate] += - p.Liver.k_L_to_P * y[Index.liver_lactate] * y[Index.liver_NAD]
-    dydt[Index.liver_pyruvate] += + p.Liver.k_L_to_P * y[Index.liver_lactate] * y[Index.liver_NAD]
+    dydt[Index.liver_extracellular_pyruvate] += + p.Liver.k_L_to_P * y[Index.liver_lactate] * y[Index.liver_NAD]
     dydt[Index.liver_NAD] += + p.Liver.k_L_to_P * y[Index.liver_lactate] * y[Index.liver_NAD]
     return
 
@@ -189,8 +194,8 @@ def __fattyacid_uptake(t, y, p, dydt):
     return
 
 def __fattyacid_export(t, y, p, dydt):
-    dydt[Index.liver_fattyacid] += - p.Liver.k_FA_to_plasma * y[Index.liver_fattyacid] * p.V.liver) / p.V.plasma
-    dydt[Index.plasma_fattyacid] += + p.Liver.k_FA_to_plasma * y[Index.liver_fattyacid] * p.V.liver) / p.V.plasma
+    dydt[Index.liver_fattyacid] += - p.Liver.k_FA_to_plasma * y[Index.liver_fattyacid] * p.V.liver / p.V.plasma
+    dydt[Index.plasma_fattyacid] += + p.Liver.k_FA_to_plasma * y[Index.liver_fattyacid] * p.V.liver / p.V.plasma
     return
 
 def __fattyacid_synthesis(t, y, p, dydt):

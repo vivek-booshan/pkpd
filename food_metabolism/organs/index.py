@@ -84,8 +84,11 @@ class Index(IntEnum):
     liver_G6P=auto()
     liver_NAD=auto()
     liver_NADH=auto()
+    liver_FAD=auto()
+    liver_FADH2=auto()
     liver_ATP=auto()
     liver_ROS=auto()
+    liver_ACoA=auto()
 
 def get_plasma_indices():
     return (

@@ -221,17 +221,21 @@ class LiverParameters:
     k_AA_to_plasma        : float
     k_FA_to_TAG           : float
     k_TAG_to_FA           : float
-
-    k_P_to_ACoA : float
-    k_ACoA_to_P : float
-    k_FA_to_ACoA: float
-    k_ACoA_to_FA: float
-    k_AA_to_ACoA: float
-    k_G_to_G6P  : float
-    k_G6P_to_G  : float
-    k_P_to_G6P  : float
-    k_G6P_to_P  : float
-    pass
+    kCL_insulin           : float
+    kCL_glucagon          : float
+    kCL_somatostatin      : float
+    k_P_to_ACoA           : float
+    k_ACoA_to_P           : float
+    k_FA_to_ACoA          : float
+    k_ACoA_to_FA          : float
+    k_AA_to_ACoA          : float
+    k_G_to_G6P            : float
+    k_G6P_to_G            : float
+    k_P_to_G6P            : float
+    k_G6P_to_P            : float
+    k_pyruvate_to_mitochondria: float
+    k_mitochondrial_pyruvate_to_ACoA: float
+    k_ACoA_to_TCA: float
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class Parameters:
