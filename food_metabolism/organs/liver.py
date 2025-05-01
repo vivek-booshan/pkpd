@@ -43,6 +43,7 @@ def __glucose_uptake(t, y, p, dydt):
     dydt[Index.liver_glucose] = + y[Index.plasma_glucose] * p.V.plasma * p.Liver.k_G_from_plasma / p.V.liver
     return
 
+
 def __glucose_export(t, y, p, dydt):
     dydt[Index.liver_glucose] = - y[Index.liver_glucose] * p.V.liver * p.Liver.k_G_to_plasma / p.V.plasma
     dydt[Index.plasma_glucose] = + y[Index.liver_glucose] * p.V.liver * p.Liver.k_G_to_plasma / p.V.plasma
@@ -57,6 +58,23 @@ def __glycolysis(t, y, p, dydt):
     dydt[Index.liver_NADH] = + 2 * y[Index.liver_glucose] * p.Liver.k_glycolysis
     dydt[Index.liver_NAD] = - 2 * y[Index.liver_glucose] * p.Liver.k_glycolysis
     return
+
+def __fructose_uptake(t, y, p, dydt):
+    dydt[Index.plasma_fructose] = - y[Index.plasma_fructose] * p.V.plasma * p.Liver.k_F_from_plasma / p.V.liver
+    dydt[Index.liver_fructose] = + y[Index.plasma_fructose] * p.V.plasma * p.Liver.k_F_from_plasma / p.V.liver
+    return
+
+def __fructose_export(t, y, p, dydt):
+    dydt[Index.liver_fructose] = - y[Index.plasma_fructose] * p.V.plasma * p.Liver.k_F_to_plasma / p.V.liver
+    dydt[Index.plasma_fructose] = + y[Index.plasma_fructose] * p.V.plasma * p.Liver.k_F_to_plasma / p.V.liver
+    return
+
+def __fructolysis(t, y, p, dydt):
+    dydt[Index.liver_glucose] = - y[Index.liver_glucose] * p.Liver.k_glycolysis
+    dydt[Index.liver_extracellular_pyruvate] = + 2 * y[Index.liver_glucose] * p.Liver.k_glycolysis
+    dydt[Index.liver_ATP] = + 2 * y[Index.liver_glucose] * p.Liver.k_glycolysis
+    dydt[Index.liver_NADH] = + 2 * y[Index.liver_glucose] * p.Liver.k_glycolysis
+    dydt[Index.liver_NAD] = - 2 * y[Index.liver_glucose] * p.Liver.k_glycolysis
 
 def __pyruvate_to_mitochondria(t, y, p, dydt):
     dydt[Index.liver_extracellular_pyruvate] = - y[Index.liver_extracellular_pyruvate] * p.Liver.k_pyruvate_to_mitochondria
@@ -89,18 +107,7 @@ def __insulin_breakdown(t, y, p, dydt):
 def __insulin_modulate(t, y, p, dydt):
     # vary metabolic parameters based on insulin concentration
     pass
-
-    
-def __insulin_breakdown(t, y, p, dydt):
-    # assume any insulin into liver auto metabolized thus bypass insulin from plasma to liver ecs
-    dydt[Index.plasma_insulin] = - p.Liver.kCL_insulin * dydt[Index.plasma_insulin]
-    return
-
-def __insulin_modulate(t, y, p, dydt):
-    # vary metabolic parameters based on insulin concentration
-    pass
-
-    
+   
 def __glucagon_breakdown(t, y, p, dydt):
     # assume any glucagon into liver auto metabolized thus bypass glucagon from plasma to liver ecs
     dydt[Index.plasma_glucagon] = - p.Liver.kCL_glucagon * dydt[Index.plasma_glucagon]
