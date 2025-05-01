@@ -112,6 +112,17 @@ class MuscleParameters:
     kCL_FA               : float
     k_ACoA_to_TCA        : float
 
+    k_P_to_ACoA : float
+    k_ACoA_to_P : float
+    k_FA_to_ACoA: float
+    k_ACoA_to_FA: float
+    k_AA_to_ACoA: float
+    k_G_to_G6P  : float
+    k_G6P_to_G  : float
+    k_P_to_G6P  : float
+    k_G6P_to_P  : float
+
+
 @dataclass(frozen=True, slots=True)
 class FatParameters:
     """
@@ -147,6 +158,17 @@ class FatParameters:
     k_FA_to_TAG           : float
     k_TAG_to_FA           : float
     kCL_insulin           : float
+
+    k_P_to_ACoA : float
+    k_ACoA_to_P : float
+    k_FA_to_ACoA: float
+    k_ACoA_to_FA: float
+    k_AA_to_ACoA: float
+    k_G_to_G6P  : float
+    k_G6P_to_G  : float
+    k_P_to_G6P  : float
+    k_G6P_to_P  : float
+
 
 @dataclass(frozen=True, slots=True)
 class GIParameters:
@@ -222,7 +244,7 @@ class Parameters:
     enabling the easy passing and organization of these values to the model's functions and solvers.
     """
     V      : Volumes
-    Shared : SharedRates
+    # Shared : SharedRates
     M      : MuscleParameters
     Subq   : FatParameters
     Vsc    : FatParameters
