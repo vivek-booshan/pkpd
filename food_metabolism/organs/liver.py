@@ -15,19 +15,19 @@ def __liver(t: float, y: np.ndarray, p: Parameters, dydt: np.ndarray):
     __glycolysis(t, y, p, dydt)
     __gluconeogenesis(t, y, p, dydt)
 
-    # __fructose_uptake(t, y, p, dydt)
-    # __fructose_export(t, y, p, dydt)
-    # __fructose_to_pyruvate(t, y, p, dydt)
-    # __pyruvate_to_fructose(t, y, p, dydt)
+    __fructose_uptake(t, y, p, dydt)
+    __fructose_export(t, y, p, dydt)
+    __fructose_to_pyruvate(t, y, p, dydt)
+    __pyruvate_to_fructose(t, y, p, dydt)
 
     # __glycogen_synthesis(t, y, p, dydt)
     # __glycogen_breakdown(t, y, p, dydt)
 
-    # __fattyacid_uptake(t, y, p, dydt)
-    # __fattyacid_export(t, y, p, dydt)
+    __fattyacid_uptake(t, y, p, dydt)
+    __fattyacid_export(t, y, p, dydt)
 
-    # __aminoacid_uptake(t, y, p, dydt)
-    # __aminoacid_export(t, y, p, dydt)
+    __aminoacid_uptake(t, y, p, dydt)
+    __aminoacid_export(t, y, p, dydt)
 
     __insulin_breakdown(t, y, p, dydt)
     __glucagon_breakdown(t, y, p, dydt)    
@@ -87,7 +87,7 @@ def __pyruvate_to_g6p(t, y, p, dydt):
 
     dydt[Index.liver_extracellular_pyruvate] += - 2 * p.Liver.k_P_to_G6P  * y[Index.liver_extracellular_pyruvate]**2 * y[Index.liver_ATP]**3 * y[Index.liver_NADH]**2
     dydt[Index.liver_NADH] += - 2 * p.Liver.k_P_to_G6P * y[Index.liver_extracellular_pyruvate]**2 * y[Index.liver_ATP]**3 * y[Index.liver_NADH]**2
-    dydt[Index.liver_ATP] += - 3 * p.Liver.k_P_to_G6P * y[Index.muscle_pyruvate]**2 * y[Index.muscle_ATP]**3 * y[Index.muscle_NADH]**2
+    dydt[Index.liver_ATP] += - 3 * p.Liver.k_P_to_G6P * y[Index.liver_extracellular_pyruvate]**2 * y[Index.liver_ATP]**3 * y[Index.liver_NADH]**2
     return
 
 def __glycolysis(t, y, p, dydt):
