@@ -74,10 +74,10 @@ def __fatty_acid_full_model(t, y, p, dydt):
     J_trans = (GI.k_Vmax_trans * y[Index.membrane_fattyacid]) / (GI.Km_trans + y[Index.membrane_fattyacid] + 1e-6)
     J_reester = (GI.k_Vmax_reester * y[Index.cytosol_fattyacid]) / (GI.Km_reester + y[Index.cytosol_fattyacid] + 1e-6)
     J_export = (GI.k_Vmax_export * y[Index.cytosol_TAG]) / (GI.Km_export + y[Index.cytosol_TAG] + 1e-6)
-    J_clear = GI.kCL_fattyacid * y[Index.plasma_glucose]
+    J_clear = 0
 
     dydt[Index.micellar_fattyacid] += -J_diff
     dydt[Index.membrane_fattyacid] += J_diff - J_trans
     dydt[Index.cytosol_fattyacid] += J_trans - J_reester
     dydt[Index.cytosol_TAG] += J_reester - J_export
-    dydt[Index.plasma_fattyacid] += (J_export - J_clear)
+    dydt[Index.plasma_fattyacid] += J_trans

@@ -209,7 +209,7 @@ def __ROS(t, y, p, dydt):
     ROSpercent = 0.01
     Km = 1
 
-    dydt[Index.subq_ROS] += ROSpercent * (
+    dydt[Index.subq_ROS] += ROSpercent * 0.1 * (
         p.Subq.k_FA_to_ACoA * y[Index.subq_fattyacid]
         + p.Subq.k_AA_to_ACoA * y[Index.subq_aminoacid]
         + 3 * (p.Subq.k_FA_to_TAG * p.V.subq * y[Index.subq_fattyacid] / (Km + y[Index.subq_fattyacid] * p.V.subq))**3
