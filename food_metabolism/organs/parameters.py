@@ -224,6 +224,8 @@ class LiverParameters:
     kCL_insulin           : float
     kCL_glucagon          : float
     kCL_somatostatin      : float
+    k_F_to_P: float
+    k_P_to_F: float
     k_P_to_ACoA           : float
     k_ACoA_to_P           : float
     k_FA_to_ACoA          : float
