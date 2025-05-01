@@ -217,10 +217,10 @@ def __ATP(t, y, p, dydt):
 
 def __lactate(t, y, p, dydt):
     dydt[Index.plasma_lactate] += (
-        (-p.M.kCL_FA * y[Index.plasma_lactate] * p.V.plasma + p.M.kCL_FA * y[Index.muscle_lactate] * p.V.muscle) / p.V.plasma
+        (-p.M.k_L_from_plasma * y[Index.plasma_lactate] * p.V.plasma + p.M.k_L_to_plasma * y[Index.muscle_lactate] * p.V.muscle) / p.V.plasma
     )
     dydt[Index.muscle_lactate] += (
-        (p.M.kCL_FA * y[Index.plasma_lactate] * p.V.plasma - p.M.kCL_FA * y[Index.muscle_lactate] * p.V.muscle) / p.V.muscle
+        (p.M.k_L_from_plasma * y[Index.plasma_lactate] * p.V.plasma - p.M.k_L_to_plasma * y[Index.muscle_lactate] * p.V.muscle) / p.V.muscle
         + p.M.k_P_to_L * y[Index.muscle_pyruvate] * y[Index.muscle_NADH] - p.M.k_L_to_P * y[Index.muscle_lactate] * y[Index.muscle_NAD]
     )
 
