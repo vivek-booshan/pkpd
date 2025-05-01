@@ -147,6 +147,9 @@ def init() -> Parameters:
             k_mitochondrial_pyruvate_to_ACoA=1,
             k_ACoA_to_TCA=1,
 
+            k_F_to_P=1,
+            k_P_to_F=0.01,
+
         ),
     )
     return p
