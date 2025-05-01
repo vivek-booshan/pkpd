@@ -69,12 +69,12 @@ def __g6p_to_glucose(t, y, p, dydt):
 
 # NOTE : need to double check this
 def __fructose_to_pyruvate(t, y, p, dydt):
-    dydt[Index.liver_fructose] += - p.Liver.k_F_to_P * y[Index.liver_fructose] * y[Index.liver_NAD]**2
-    dydt[Index.liver_NAD] += - 2 * p.Liver.k_F_to_P * y[Index.liver_G6P] * y[Index.liver_NAD]**2
+    dydt[Index.liver_fructose] += - p.Liver.k_F_to_P * y[Index.liver_fructose] 
+    dydt[Index.liver_NAD] += - 2 * p.Liver.k_F_to_P * y[Index.liver_G6P] 
 
-    dydt[Index.liver_extracellular_pyruvate] += + 2 * p.Liver.k_F_to_P * y[Index.liver_G6P] * y[Index.liver_NAD]**2
-    dydt[Index.liver_NADH] += + 2 * p.Liver.k_F_to_P * y[Index.liver_G6P] * y[Index.liver_NAD]**2
-    dydt[Index.liver_ATP] += + 3 * p.Liver.k_F_to_P * y[Index.liver_G6P] * y[Index.liver_NAD]**2
+    dydt[Index.liver_extracellular_pyruvate] += + 2 * p.Liver.k_F_to_P * y[Index.liver_G6P] 
+    dydt[Index.liver_NADH] += + 2 * p.Liver.k_F_to_P * y[Index.liver_G6P] 
+    dydt[Index.liver_ATP] += + 3 * p.Liver.k_F_to_P * y[Index.liver_G6P] 
     return
 
 # NOTE : need to doublecheck this
@@ -82,8 +82,8 @@ def __pyruvate_to_fructose(t, y, p, dydt):
     return
 
 def __pyruvate_to_g6p(t, y, p, dydt):
-    dydt[Index.liver_G6P] += + p.Liver.k_P_to_G6P * y[Index.liver_extracellular_pyruvate]**2 * y[Index.liver_ATP]**3 * y[Index.liver_NADH]**2
-    dydt[Index.liver_NAD] += + 2 * p.Liver.k_P_to_G6P * y[Index.liver_extracellular_pyruvate]**2 * y[Index.liver_ATP]**3 * y[Index.liver_NADH]**2
+    dydt[Index.liver_G6P] += + p.Liver.k_P_to_G6P * y[Index.liver_extracellular_pyruvate]**2 * y[Index.liver_ATP]**3 
+    dydt[Index.liver_NAD] += + 2 * p.Liver.k_P_to_G6P * y[Index.liver_extracellular_pyruvate]**2 * y[Index.liver_ATP]**3 
 
     dydt[Index.liver_extracellular_pyruvate] += - 2 * p.Liver.k_P_to_G6P  * y[Index.liver_extracellular_pyruvate]**2 * y[Index.liver_ATP]**3 * y[Index.liver_NADH]**2
     dydt[Index.liver_NADH] += - 2 * p.Liver.k_P_to_G6P * y[Index.liver_extracellular_pyruvate]**2 * y[Index.liver_ATP]**3 * y[Index.liver_NADH]**2

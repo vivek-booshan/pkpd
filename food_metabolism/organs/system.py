@@ -143,9 +143,7 @@ def init() -> Parameters:
             k_P_to_G6P=0.1,                # pyruvate_to_g6p
             k_G6P_to_P=1.0,                # g6p_to_pyruvate
 
-            k_pyruvate_to_mitochondria=1,
-            k_mitochondrial_pyruvate_to_ACoA=1,
-            k_ACoA_to_TCA=1,
+           
 
         ),
     )
